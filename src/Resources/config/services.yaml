@@ -1,0 +1,41 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Nowo\ConsoleDebugBundle\:
+        resource: '../../*'
+        exclude:
+            - '../../ConsoleDebugEntry.php'
+            - '../../ConsoleDebugHolder.php'
+            - '../../ConsoleDebugRegistry.php'
+            - '../../DependencyInjection/'
+            - '../../Functions.php'
+            - '../../NowoConsoleDebugBundle.php'
+            - '../../Twig/'
+
+    nowo.console_debug.registry:
+        class: Nowo\ConsoleDebugBundle\ConsoleDebugRegistry
+
+    Nowo\ConsoleDebugBundle\ConsoleDebugRegistry: '@nowo.console_debug.registry'
+
+    nowo.console_debug:
+        class: Nowo\ConsoleDebugBundle\ConsoleDebug
+        public: true
+        arguments:
+            $gate: '@Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface'
+            $registry: '@nowo.console_debug.registry'
+            $normalizer: '@Nowo\ConsoleDebugBundle\Serializer\DebugValueNormalizer'
+            $projectDir: '%kernel.project_dir%'
+            $shortenPaths: '%nowo.console_debug.shorten_paths%'
+
+    Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugResponseSubscriber:
+        arguments:
+            $registry: '@nowo.console_debug.registry'
+            $consoleMethod: '%nowo.console_debug.console_method%'
+            $labelPrefix: '%nowo.console_debug.label_prefix%'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    Nowo\ConsoleDebugBundle\Serializer\DebugValueNormalizer: ~

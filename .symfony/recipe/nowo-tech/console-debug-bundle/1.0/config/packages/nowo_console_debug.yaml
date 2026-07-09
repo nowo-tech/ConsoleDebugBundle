@@ -1,0 +1,7 @@
+nowo_console_debug:
+    enabled: true
+    roles:
+        - ROLE_CONSOLE_DEBUG
+    console_method: log
+    label_prefix: '[cdbg]'
+    shorten_paths: true

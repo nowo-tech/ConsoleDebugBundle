@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}cdbg() examples{% endblock %}
+
+{% block body %}
+    <div class="demo-hero demo-hero-compact">
+        <h1 class="h3 mb-2">Examples</h1>
+        <p class="mb-0 opacity-75">
+            Logged in as <strong>{{ user ?? 'anonymous' }}</strong>.
+            {% if is_granted('ROLE_CONSOLE_DEBUG') %}
+                Expect <strong>11</strong> console groups (8 PHP + 3 Twig on this page).
+                <span class="badge text-bg-light text-dark ms-1">{{ phpEntryCount }} collected before Twig render</span>
+            {% else %}
+                Gate closed — open console: nothing from <code>cdbg</code> (try <code>debugger / debug</code>).
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">PHP · single variable</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>cdbg($order);</code></pre>
+                    <p class="text-muted small mb-0">No label — the value is logged as-is.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">PHP · label + multiple arguments</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>cdbg('pricing snapshot', $order, $request->query->all());</code></pre>
+                    <p class="text-muted small mb-0">First string becomes the group label; each arg is <code>arg0</code>, <code>arg1</code>…</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">PHP · mixed types</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>cdbg('mixed types', DemoPriority::High, $date, $user);</code></pre>
+                    <p class="text-muted small mb-0">Enums, dates, scalars and objects are normalized for JSON.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">PHP · sequential flow</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>cdbg('flow · step 1', …);
+cdbg('flow · step 2', …);
+cdbg('flow · step 3', …);</code></pre>
+                    <p class="text-muted small mb-0">Multiple calls in one request appear in order with <code>+Nms</code> offsets.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">PHP · entity / object</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>cdbg('entity without __toString', $entity);
+cdbg('entity with __toString', $customer);</code></pre>
+                    <p class="text-muted small mb-0">
+                        Plain entities → <code>{ object, hash }</code>.
+                        With <code>__toString()</code> → readable string.
+                        Tip: <code>cdbg(['id' => $entity->getId(), …])</code> for full fields.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">Twig · full context</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>{% verbatim %}{% cdbg %}{% endverbatim %}</code></pre>
+                    <p class="text-muted small mb-0">Like <code>{% verbatim %}{% dump %}{% endverbatim %}</code> empty — all template variables except embedded templates.</p>
+                    {% cdbg %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">Twig · function</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>{% verbatim %}{{ cdbg(demoMeta) }}{% endverbatim %}</code></pre>
+                    <p class="text-muted small mb-0">Returns empty string — safe inside HTML. Renders nothing on the page.</p>
+                    {{ cdbg(demoMeta) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card demo-card">
+                <div class="card-header">Twig · tag with multiple variables</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>{% verbatim %}{% cdbg user, demoMeta, order %}{% endverbatim %}</code></pre>
+                    <p class="text-muted small mb-3">Named map in the console. Source location points to this template line.</p>
+                    {% cdbg user, demoMeta, order %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card demo-card border-warning-subtle">
+                <div class="card-header">Non-HTML · JSON endpoint</div>
+                <div class="card-body">
+                    <pre class="demo-code mb-2"><code>GET {{ path('demo_debug_json') }}
+cdbg('json endpoint', ['injected' => false]);</code></pre>
+                    <p class="text-muted small mb-3">
+                        <code>cdbg()</code> still runs when the gate is open, but the response subscriber skips non-HTML bodies.
+                        <a href="{{ path('demo_debug_json') }}" target="_blank" rel="noopener">Open JSON</a> — no <code>data-nowo-console-debug</code> script.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4 mb-0">
+        DevTools → Console: styled banner, collapsed groups <code>#1</code>…<code>#N</code>, file/template line, optional label, timing offsets.
+    </div>
+{% endblock %}
