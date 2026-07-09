@@ -1,0 +1,10 @@
+services:
+    Nowo\ConsoleDebugBundle\Twig\ConsoleDebugRuntime:
+        arguments:
+            $consoleDebug: '@nowo.console_debug'
+        tags:
+            - { name: twig.runtime }
+
+    Nowo\ConsoleDebugBundle\Twig\ConsoleDebugTwigExtension:
+        tags:
+            - { name: twig.extension }

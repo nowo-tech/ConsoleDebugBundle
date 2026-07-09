@@ -1,0 +1,9 @@
+nowo_console_debug:
+    enabled: true
+    roles:
+        - ROLE_CONSOLE_DEBUG
+    console_method: info
+    label_prefix: '[cdbg]'
+    shorten_paths: true
+    # query_param: console_debug
+    # gate_service: App\ConsoleDebug\AppConsoleDebugGate

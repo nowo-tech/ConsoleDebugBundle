@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Console Debug Demo{% endblock %}
+
+{% block body %}
+    <div class="demo-hero">
+        <h1 class="h2 mb-2">Console Debug Bundle</h1>
+        <p class="mb-0 opacity-75">Production-safe browser console debugging with <code class="text-white">cdbg()</code> in PHP and Twig.</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">Try it</div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2"><a href="{{ path('login') }}">Login</a> as <code>debugger / debug</code></li>
+                        <li class="mb-2">Open <a href="{{ path('demo_debug') }}">Examples</a> and DevTools → Console</li>
+                        <li>Compare with <code>viewer / viewer</code> (gate closed — no console output)</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card demo-card h-100">
+                <div class="card-header">Demo users</div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3">
+                            <strong>debugger</strong> / <strong>debug</strong>
+                            <div><span class="badge text-bg-success">ROLE_CONSOLE_DEBUG</span> — sees console output</div>
+                        </li>
+                        <li>
+                            <strong>viewer</strong> / <strong>viewer</strong>
+                            <div><span class="badge text-bg-secondary">ROLE_USER only</span> — gate closed, zero injection</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card demo-card">
+        <div class="card-header">All use cases on the Examples page</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table demo-use-case-table mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th>Case</th>
+                            <th>Syntax</th>
+                            <th>Where</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Single value</td>
+                            <td><code>cdbg($order)</code></td>
+                            <td>PHP controller</td>
+                        </tr>
+                        <tr>
+                            <td>Label + multiple args</td>
+                            <td><code>cdbg('pricing snapshot', $order, $query)</code></td>
+                            <td>PHP controller</td>
+                        </tr>
+                        <tr>
+                            <td>Mixed types</td>
+                            <td><code>cdbg('mixed types', $enum, $date, $user)</code></td>
+                            <td>PHP controller</td>
+                        </tr>
+                        <tr>
+                            <td>Entity / object</td>
+                            <td><code>cdbg($entity)</code> · <code>__toString()</code> · DTO array</td>
+                            <td>PHP controller</td>
+                        </tr>
+                        <tr>
+                            <td>Sequential flow</td>
+                            <td><code>cdbg('flow · step 1', …)</code> × 3</td>
+                            <td>PHP controller</td>
+                        </tr>
+                        <tr>
+                            <td>Full Twig context</td>
+                            <td><code>{% verbatim %}{% cdbg %}{% endverbatim %}</code></td>
+                            <td>Twig template</td>
+                        </tr>
+                        <tr>
+                            <td>Twig function</td>
+                            <td><code>{% verbatim %}{{ cdbg(demoMeta) }}{% endverbatim %}</code></td>
+                            <td>Twig template</td>
+                        </tr>
+                        <tr>
+                            <td>Twig tag · multiple vars</td>
+                            <td><code>{% verbatim %}{% cdbg user, demoMeta, order %}{% endverbatim %}</code></td>
+                            <td>Twig template</td>
+                        </tr>
+                        <tr>
+                            <td>Non-HTML (JSON API)</td>
+                            <td><code>cdbg(…)</code> in <a href="{{ path('demo_debug_json') }}">/debug/data.json</a></td>
+                            <td>Collected, not injected</td>
+                        </tr>
+                        <tr>
+                            <td>Role gate</td>
+                            <td><code>ROLE_CONSOLE_DEBUG</code></td>
+                            <td>Login as <code>viewer</code> → silent</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
