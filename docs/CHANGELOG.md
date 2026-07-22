@@ -8,11 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.3] - 2026-07-22](#103---2026-07-22)
 - [[1.0.2] - 2026-07-22](#102---2026-07-22)
 - [[1.0.1] - 2026-07-22](#101---2026-07-22)
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.3] - 2026-07-22
+
+### Fixed
+
+- **CI** — Symfony 8 matrix jobs use `composer config platform.php 8.4.1` (Composer treats `8.4` as `8.4.0`, which fails Symfony 8.1’s `php >=8.4.1`).
+- **CI** — Code Style / Code Style Check / Coverage install Symfony 7.4 before resolving deps so PHP 8.2 runners work with a lockfile that may pin Symfony 8.1.
 
 ## [1.0.2] - 2026-07-22
 
