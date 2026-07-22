@@ -1,5 +1,9 @@
 # Upgrading
 
+## 1.0.3
+
+No application or API changes. If you only consume the Packagist package, no upgrade steps.
+
 ## 1.0.2
 
 No application or API changes. If you only consume the Packagist package, no upgrade steps.
