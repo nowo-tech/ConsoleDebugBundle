@@ -1,5 +1,11 @@
 # Upgrading
 
+## 1.0.2
+
+No application or API changes. If you only consume the Packagist package, no upgrade steps.
+
+**Demos / contributors:** each demo `.gitignore` now ignores `/.pnpm-store`. If you had a local store under `demo/**`, it remains on disk but is no longer tracked by git.
+
 ## 1.0.1
 
 No application or API changes. If you only consume the Packagist package, no upgrade steps.
