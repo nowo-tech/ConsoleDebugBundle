@@ -8,10 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.2] - 2026-07-22](#102---2026-07-22)
 - [[1.0.1] - 2026-07-22](#101---2026-07-22)
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.2] - 2026-07-22
+
+### Fixed
+
+- **Demos** — ignore `/.pnpm-store` in each demo `.gitignore` (REQ-GITIGNORE-003) and stop tracking the local pnpm store under `demo/**` so it is no longer versioned.
 
 ## [1.0.1] - 2026-07-22
 
