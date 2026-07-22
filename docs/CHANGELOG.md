@@ -8,9 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.1] - 2026-07-22](#101---2026-07-22)
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.1] - 2026-07-22
+
+### Changed
+
+- **Demos (FrankenPHP)** — runtime mode is selected with `FRANKENPHP_MODE` (`classic` default, or `worker`) via `.env` / Compose; entrypoint lives in `docker/entrypoint.sh` instead of an inline Dockerfile script.
+- **Docs** — [DEMO-FRANKENPHP.md](DEMO-FRANKENPHP.md) documents classic vs worker switching and recreate after env changes.
+
+### Chore
+
+- Bump `friendsofphp/php-cs-fixer` (3.95.12 → 3.95.15).
+- Bump `rector/rector` in lockfile (2.5.5 → 2.5.7).
+- Bump GitHub Actions: `actions/checkout` (6 → 7), `actions/github-script` (7 → 9).
 
 ## [1.0.0] - 2026-07-09
 

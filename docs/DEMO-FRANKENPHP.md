@@ -8,10 +8,10 @@ This bundle includes runnable demos with FrankenPHP in:
 Each demo uses:
 
 - Caddy on HTTP `:80` inside the container
-- **`Caddyfile`** (production image / `APP_ENV` not `dev`): **worker** mode for throughput
-- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — used when the entrypoint runs with **`APP_ENV=dev`** (default in `docker-compose`)
+- **`Caddyfile`**: **worker** mode (`php_server { worker ... }`) for throughput — selected when `FRANKENPHP_MODE=worker`
+- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — default via `FRANKENPHP_MODE=classic`
 
-**Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`** and **`APP_DEBUG=1`**, mounts **`docker/frankenphp/Caddyfile.dev`** and **`docker/php-dev.ini`**. The container entrypoint copies `Caddyfile.dev` over the active Caddyfile so you get **one PHP process per request**, not workers.
+**Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`**, **`APP_DEBUG=1`**, and **`FRANKENPHP_MODE=classic`**, and mounts **`docker/frankenphp/Caddyfile.dev`** plus **`docker/php-dev.ini`**. Classic mode is one PHP process per request (hot-reload friendly) and survives first boot before `composer install`. Set `FRANKENPHP_MODE=worker` for throughput testing.
 
 ## Quick start
 
@@ -53,6 +53,17 @@ return [
     Nowo\ConsoleDebugBundle\NowoConsoleDebugBundle::class   => ['all' => true],
 ];
 ```
+
+## Switching classic vs worker (`FRANKENPHP_MODE`)
+
+Demos select the FrankenPHP runtime via **`FRANKENPHP_MODE`** in `.env` / `.env.example` (not a Dockerfile `ENV`):
+
+| Value | Behaviour |
+| --- | --- |
+| **`classic`** (default) | Entrypoint copies `Caddyfile.dev` (plain `php_server`, hot-reload / first-boot friendly) |
+| **`worker`** | Keep the worker Caddyfile (`php_server { worker ... }`) |
+
+Compose passes `FRANKENPHP_MODE=${FRANKENPHP_MODE:-classic}` into the PHP service. After changing `.env`, run `docker compose up -d` (or `make up`) so the container is **recreated** — a plain `restart` does not reload env. No image rebuild is required.
 
 ## Troubleshooting
 
