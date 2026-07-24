@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-# FRANKENPHP_MODE: classic | worker. Default: classic (dev / first-boot safe).
+# FRANKENPHP_MODE: classic | worker. Default: worker (REQ-DEMO-010).
 # Set via .env / Compose only — not baked into the image ENV.
-MODE="${FRANKENPHP_MODE:-classic}"
+MODE="${FRANKENPHP_MODE:-worker}"
 case "$MODE" in
 	classic)
 		cp /etc/frankenphp/Caddyfile.dev /etc/frankenphp/Caddyfile

@@ -9,6 +9,7 @@ use Nowo\ConsoleDebugBundle\DependencyInjection\ConsoleDebugExtension;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Twig\Extension\AbstractExtension;
 
 final class ConsoleDebugExtensionIntegrationTest extends TestCase
 {
@@ -79,7 +80,7 @@ final class ConsoleDebugExtensionIntegrationTest extends TestCase
 
     public function testExtensionRegistersTwigIntegrationWhenTwigIsAvailable(): void
     {
-        if (!class_exists(\Twig\Extension\AbstractExtension::class)) {
+        if (!class_exists(AbstractExtension::class)) {
             self::markTestSkipped('Twig is not installed.');
         }
 

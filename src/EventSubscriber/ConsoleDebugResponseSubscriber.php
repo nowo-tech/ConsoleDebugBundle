@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\ConsoleDebugBundle\EventSubscriber;
 
+use Nowo\ConsoleDebugBundle\ConsoleDebugEntry;
 use Nowo\ConsoleDebugBundle\ConsoleDebugRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -61,7 +62,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         }
 
         $payload = json_encode(
-            array_map(static fn (\Nowo\ConsoleDebugBundle\ConsoleDebugEntry $entry): array => $entry->toArray(), $this->registry->all()),
+            array_map(static fn (ConsoleDebugEntry $entry): array => $entry->toArray(), $this->registry->all()),
             JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
         );
 

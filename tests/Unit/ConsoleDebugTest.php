@@ -118,4 +118,82 @@ final class ConsoleDebugTest extends TestCase
 
         self::assertSame('src/Controller/Demo.php', $method->invoke($service, '/var/www/app/src/Controller/Demo.php'));
     }
+
+    public function testLogAtIsIgnoredWhenGateIsDisabled(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $service  = new ConsoleDebug(
+            new EnabledConsoleDebugGate(false),
+            $registry,
+            new DebugValueNormalizer(),
+            projectDir: null,
+            shortenPaths: false,
+        );
+
+        $service->logAt('templates/demo.html.twig', 1, 'ignored');
+
+        self::assertTrue($registry->isEmpty());
+    }
+
+    public function testResolveCallerFrameSkipsConsoleDebugFrames(): void
+    {
+        $service = new ConsoleDebug(
+            new EnabledConsoleDebugGate(true),
+            new ConsoleDebugRegistry(),
+            new DebugValueNormalizer(),
+            projectDir: null,
+            shortenPaths: false,
+        );
+
+        $method = new ReflectionMethod(ConsoleDebug::class, 'resolveCallerFrame');
+        $method->setAccessible(true);
+
+        $frame = $method->invoke($service, [
+            ['file' => '/app/src/ConsoleDebug.php', 'line' => 40],
+            ['file' => '/app/src/Controller/Demo.php', 'line' => 12],
+        ]);
+
+        self::assertSame('/app/src/Controller/Demo.php', $frame['file']);
+        self::assertSame(12, $frame['line']);
+    }
+
+    public function testResolveCallerFrameFallsBackWhenOnlyInternalFramesExist(): void
+    {
+        $service = new ConsoleDebug(
+            new EnabledConsoleDebugGate(true),
+            new ConsoleDebugRegistry(),
+            new DebugValueNormalizer(),
+            projectDir: null,
+            shortenPaths: false,
+        );
+
+        $method = new ReflectionMethod(ConsoleDebug::class, 'resolveCallerFrame');
+        $method->setAccessible(true);
+
+        $frame = $method->invoke($service, [
+            ['file' => '/app/src/ConsoleDebug.php', 'line' => 40],
+            ['file' => '/app/src/ConsoleDebug.php', 'line' => 58],
+        ]);
+
+        self::assertSame('/app/src/ConsoleDebug.php', $frame['file']);
+        self::assertSame(58, $frame['line']);
+    }
+
+    public function testRegistryResetClearsEntries(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $service  = new ConsoleDebug(
+            new EnabledConsoleDebugGate(true),
+            $registry,
+            new DebugValueNormalizer(),
+            projectDir: null,
+            shortenPaths: false,
+        );
+
+        $service->log('keep');
+        self::assertFalse($registry->isEmpty());
+
+        $registry->reset();
+        self::assertTrue($registry->isEmpty());
+    }
 }

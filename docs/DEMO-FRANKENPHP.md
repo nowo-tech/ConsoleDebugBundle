@@ -2,16 +2,16 @@
 
 This bundle includes runnable demos with FrankenPHP in:
 
-- `demo/symfony7` — Symfony **7.4**
-- `demo/symfony8` — Symfony **8.1** (PHP **8.4+**)
+- `demo/symfony7` — Symfony **7.4** (FrankenPHP PHP **8.4**)
+- `demo/symfony8` — Symfony **8.1** (FrankenPHP PHP **8.5**, REQ-DEMO-010)
 
 Each demo uses:
 
 - Caddy on HTTP `:80` inside the container
-- **`Caddyfile`**: **worker** mode (`php_server { worker ... }`) for throughput — selected when `FRANKENPHP_MODE=worker`
-- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — default via `FRANKENPHP_MODE=classic`
+- **`Caddyfile`**: **worker** mode (`php_server { worker ... }`) — selected when `FRANKENPHP_MODE=worker` (**default**)
+- **`Caddyfile.dev`**: classic `php_server` (**no worker**) — selected when `FRANKENPHP_MODE=classic`
 
-**Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`**, **`APP_DEBUG=1`**, and **`FRANKENPHP_MODE=classic`**, and mounts **`docker/frankenphp/Caddyfile.dev`** plus **`docker/php-dev.ini`**. Classic mode is one PHP process per request (hot-reload friendly) and survives first boot before `composer install`. Set `FRANKENPHP_MODE=worker` for throughput testing.
+**Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`**, **`APP_DEBUG=1`**, and **`FRANKENPHP_MODE=worker`**, and mounts **`docker/php-dev.ini`**. Use `FRANKENPHP_MODE=classic` when you need one PHP process per request (hot-reload / first-boot before `composer install`).
 
 ## Quick start
 
@@ -60,13 +60,18 @@ Demos select the FrankenPHP runtime via **`FRANKENPHP_MODE`** in `.env` / `.env.
 
 | Value | Behaviour |
 | --- | --- |
-| **`classic`** (default) | Entrypoint copies `Caddyfile.dev` (plain `php_server`, hot-reload / first-boot friendly) |
-| **`worker`** | Keep the worker Caddyfile (`php_server { worker ... }`) |
+| **`worker`** (default) | Keep the worker Caddyfile (`php_server { worker ... }`) |
+| **`classic`** | Entrypoint copies `Caddyfile.dev` (plain `php_server`, hot-reload / first-boot friendly) |
 
-Compose passes `FRANKENPHP_MODE=${FRANKENPHP_MODE:-classic}` into the PHP service. After changing `.env`, run `docker compose up -d` (or `make up`) so the container is **recreated** — a plain `restart` does not reload env. No image rebuild is required.
+Compose passes `FRANKENPHP_MODE=${FRANKENPHP_MODE:-worker}` into the PHP service. After changing `.env`, run `docker compose up -d` (or `make up`) so the container is **recreated** — a plain `restart` does not reload env. No image rebuild is required.
+
+## Production
+
+For a production-like run, keep `FRANKENPHP_MODE=worker` (default), set `APP_ENV=prod` / `APP_DEBUG=0` as needed, and ensure Composer dependencies are installed before serving traffic.
 
 ## Troubleshooting
 
 - If app does not respond, run `make -C demo/symfony7 logs` or `make -C demo/symfony8 logs`.
 - If routes/config changed, run `make -C demo/symfony7 cache-clear` (or `symfony8`).
 - If dependencies are outdated, run `make -C demo/symfony7 update-bundle` (or `symfony8`).
+- Unknown `FRANKENPHP_MODE` values fail fast in `docker/entrypoint.sh`.

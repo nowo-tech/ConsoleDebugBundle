@@ -6,6 +6,8 @@ namespace Nowo\ConsoleDebugBundle\Tests\Unit\Twig;
 
 use Nowo\ConsoleDebugBundle\Twig\TwigContextExtractor;
 use PHPUnit\Framework\TestCase;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 use Twig\Template;
 
 final class TwigContextExtractorTest extends TestCase
@@ -13,7 +15,7 @@ final class TwigContextExtractorTest extends TestCase
     public function testExtractsContextWithoutEmbeddedTemplates(): void
     {
         $template = $this->createMock(Template::class);
-        $env      = new \Twig\Environment(new \Twig\Loader\ArrayLoader(['x' => '']));
+        $env      = new Environment(new ArrayLoader(['x' => '']));
         $wrapper  = $env->load('x');
 
         $context = [

@@ -7,28 +7,34 @@ namespace Nowo\ConsoleDebugBundle;
 use LogicException;
 
 /**
- * Static bridge used by the global cdbg() helper.
+ * Process bridge used by the global cdbg() helper.
+ *
+ * Avoids mutable static properties (FrankenPHP worker-safe). The ConsoleDebug
+ * service reference is stored under a dedicated $_SERVER key and re-bound on
+ * each kernel.request (FrankenPHP resets $_SERVER between worker iterations).
+ * Request payloads live in ConsoleDebugRegistry (ResetInterface / kernel.reset).
  */
 final class ConsoleDebugHolder
 {
-    private static ?ConsoleDebug $instance = null;
+    private const SERVER_KEY = '__NOWO_CONSOLE_DEBUG';
 
     public static function set(ConsoleDebug $consoleDebug): void
     {
-        self::$instance = $consoleDebug;
+        $_SERVER[self::SERVER_KEY] = $consoleDebug;
     }
 
     public static function get(): ConsoleDebug
     {
-        if (!self::$instance instanceof ConsoleDebug) {
+        $instance = $_SERVER[self::SERVER_KEY] ?? null;
+        if (!$instance instanceof ConsoleDebug) {
             throw new LogicException('ConsoleDebugBundle is not booted or the nowo.console_debug service is unavailable.');
         }
 
-        return self::$instance;
+        return $instance;
     }
 
     public static function reset(): void
     {
-        self::$instance = null;
+        unset($_SERVER[self::SERVER_KEY]);
     }
 }

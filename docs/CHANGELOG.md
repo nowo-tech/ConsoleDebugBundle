@@ -8,12 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.4] - 2026-07-24](#104---2026-07-24)
 - [[1.0.3] - 2026-07-22](#103---2026-07-22)
 - [[1.0.2] - 2026-07-22](#102---2026-07-22)
 - [[1.0.1] - 2026-07-22](#101---2026-07-22)
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.4] - 2026-07-24
+
+### Added
+
+- **FrankenPHP worker safety** — `ConsoleDebugRegistry` implements `ResetInterface`; `ConsoleDebugHolder` stores the service in `$_SERVER` (no mutable static property) and re-binds on `kernel.request` via `ConsoleDebugHolderRequestSubscriber`.
+- **PHPStan FrankenPHP** — `nowo-tech/phpstan-frankenphp` in require-dev with classic + worker rulesets (`phpstan.neon.dist`).
+- **Code of Conduct** — Contributor Covenant at repository root (`CODE_OF_CONDUCT.md`).
+- **Git hygiene (REQ-GIT-001)** — `.githooks`, `make setup-hooks` / `check-no-cursor-coauthor` / `strip-cursor-coauthor-from-history`, CI `git-hygiene` job, and [GITHUB_CI.md](GITHUB_CI.md).
+
+### Changed
+
+- **Composer** — Symfony component constraints allow `^7.4 || ^8.0`.
+- **Demos** — `FRANKENPHP_MODE` default is **`worker`**; Symfony 8 demo image uses FrankenPHP **PHP 8.5** (`dunglas/frankenphp:1-php8.5-alpine`).
+- **Makefile** — `down-dev`; `release-check` runs Cursor co-author history check first.
+
+### Documentation
+
+- README FrankenPHP Friendly Worker Mode banner and Code of Conduct / CI links.
+- [DEMO-FRANKENPHP.md](DEMO-FRANKENPHP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [RELEASE.md](RELEASE.md), and Spec Kit baseline (`specs/001-baseline/`) updated for worker defaults and inventory.
+
+### Tests
+
+- Coverage restored to **100%** (Twig `{% cdbg %}` token parser/node + registry reset / holder edge cases).
 
 ## [1.0.3] - 2026-07-22
 

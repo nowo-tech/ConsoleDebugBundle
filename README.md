@@ -6,6 +6,10 @@
 
 **Console Debug Bundle** — Production-safe browser console debugging with **`cdbg()`**, similar in spirit to Symfony's `dd()` but non-blocking: it collects file, line, and variable data server-side and injects a `<script>` that prints grouped `console.log()` output for authorized users only. Tested on Symfony **7.4**, **8.0**, and **8.1** (also compatible with Symfony 6.x and 7.0–7.3) · PHP 8.1+ (Symfony 8.x requires PHP 8.4+).
 
+![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
+
+This bundle is **FrankenPHP worker mode friendly**.
+
 ## Features
 
 - **`cdbg()` helper** — Drop-in debug calls anywhere in PHP; execution continues (no dump-and-die).
@@ -94,9 +98,11 @@ When called empty, the label is `twig context` and the template name/line is use
 - [Upgrading](docs/UPGRADING.md)
 - [Release](docs/RELEASE.md)
 - [Security](docs/SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Engram](docs/ENGRAM.md)
 - [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
 - [GitHub Spec Kit](docs/SPEC-KIT.md)
+- [GitHub CI notes](docs/GITHUB_CI.md)
 
 ### Additional documentation
 
@@ -122,9 +128,9 @@ make release-check
 ## Demo
 
 - `demo/symfony7` — Symfony **7.4**, host port **8010** by default (`PORT` in `.env`)
-- `demo/symfony8` — Symfony **8.1** (PHP 8.4+), host port **8011** by default
+- `demo/symfony8` — Symfony **8.1** (PHP **8.5**), host port **8011** by default
 
-Each demo runs **FrankenPHP + Caddy** in Docker. Login as `debugger / debug` and visit `/debug` to see `cdbg()` in the browser console. See [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
+Each demo runs **FrankenPHP + Caddy** in Docker (`FRANKENPHP_MODE=worker` by default). Login as `debugger / debug` and visit `/debug` to see `cdbg()` in the browser console. See [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
 
 Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
 

@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Twig\Extension\AbstractExtension;
 
 use function is_string;
 
@@ -37,7 +38,7 @@ final class ConsoleDebugExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
-        if (class_exists(\Twig\Extension\AbstractExtension::class)) {
+        if (class_exists(AbstractExtension::class)) {
             $loader->load('twig.yaml');
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\ConsoleDebugBundle\Gate;
 
 use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -28,7 +29,7 @@ final class QueryParamConsoleDebugGate implements ConsoleDebugGateInterface
         }
 
         $request = $this->requestStack->getMainRequest();
-        if (!$request instanceof \Symfony\Component\HttpFoundation\Request) {
+        if (!$request instanceof Request) {
             return false;
         }
 

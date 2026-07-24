@@ -17,6 +17,8 @@ services:
 
     nowo.console_debug.registry:
         class: Nowo\ConsoleDebugBundle\ConsoleDebugRegistry
+        tags:
+            - { name: kernel.reset, method: reset }
 
     Nowo\ConsoleDebugBundle\ConsoleDebugRegistry: '@nowo.console_debug.registry'
 
@@ -29,6 +31,14 @@ services:
             $normalizer: '@Nowo\ConsoleDebugBundle\Serializer\DebugValueNormalizer'
             $projectDir: '%kernel.project_dir%'
             $shortenPaths: '%nowo.console_debug.shorten_paths%'
+
+    Nowo\ConsoleDebugBundle\ConsoleDebug: '@nowo.console_debug'
+
+    Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugHolderRequestSubscriber:
+        arguments:
+            $consoleDebug: '@nowo.console_debug'
+        tags:
+            - { name: kernel.event_subscriber }
 
     Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugResponseSubscriber:
         arguments:
