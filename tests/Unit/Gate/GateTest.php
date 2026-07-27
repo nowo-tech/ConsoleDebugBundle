@@ -96,9 +96,7 @@ final class GateTest extends TestCase
         $inner = $this->createMock(ConsoleDebugGateInterface::class);
         $inner->method('isEnabled')->willReturn(true);
 
-        $request = Request::create('/demo?console_debug=1');
-        $stack   = new RequestStack();
-        $stack->push($request);
+        $stack = new RequestStack([Request::create('/demo?console_debug=1')]);
 
         $gate = new QueryParamConsoleDebugGate($inner, $stack, 'console_debug');
         self::assertTrue($gate->isEnabled());
@@ -113,8 +111,7 @@ final class GateTest extends TestCase
         $inner = $this->createMock(ConsoleDebugGateInterface::class);
         $inner->method('isEnabled')->willReturn(false);
 
-        $stack = new RequestStack();
-        $stack->push(Request::create('/demo?console_debug=1'));
+        $stack = new RequestStack([Request::create('/demo?console_debug=1')]);
 
         $gate = new QueryParamConsoleDebugGate($inner, $stack, 'console_debug');
         self::assertFalse($gate->isEnabled());

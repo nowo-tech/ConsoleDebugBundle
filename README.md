@@ -92,21 +92,21 @@ When called empty, the label is `twig context` and the template name/line is use
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Usage](docs/USAGE.md)
-- [Performance](docs/PERFORMANCE.md)
 - [Contributing](docs/CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Upgrading](docs/UPGRADING.md)
 - [Release](docs/RELEASE.md)
 - [Security](docs/SECURITY.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Engram](docs/ENGRAM.md)
 - [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
 - [GitHub Spec Kit](docs/SPEC-KIT.md)
-- [GitHub CI notes](docs/GITHUB_CI.md)
 
 ### Additional documentation
 
+- [Performance](docs/PERFORMANCE.md)
 - [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
+- [GitHub CI notes](docs/GITHUB_CI.md)
 
 ## Requirements
 

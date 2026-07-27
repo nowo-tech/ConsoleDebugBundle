@@ -1,5 +1,13 @@
 # Upgrading
 
+## 1.0.5
+
+No breaking public API changes.
+
+**Applications on Symfony 8:** package constraints again allow `symfony/*` `^7.4 || ^8.0` (a post-1.0.4 commit had narrowed them to `^7.4` only).
+
+**Contributors:** README documentation links follow the org canonical order; [CONTRIBUTING.md](CONTRIBUTING.md) now links the Code of Conduct.
+
 ## 1.0.4
 
 No breaking public API changes for typical consumers of `cdbg()` / Twig helpers.

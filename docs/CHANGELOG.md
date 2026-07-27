@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.5] - 2026-07-27](#105---2026-07-27)
 - [[1.0.4] - 2026-07-24](#104---2026-07-24)
 - [[1.0.3] - 2026-07-22](#103---2026-07-22)
 - [[1.0.2] - 2026-07-22](#102---2026-07-22)
@@ -15,6 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.5] - 2026-07-27
+
+### Documentation
+
+- **REQ-DOCS-002 / REQ-DOCS-015** — README `## Documentation` uses the canonical link order (Code of Conduct after Contributing, before Changelog); Performance and GitHub CI notes moved under `### Additional documentation`.
+- **REQ-DOCS-015** — [CONTRIBUTING.md](CONTRIBUTING.md) includes a Code of Conduct section linking to `../CODE_OF_CONDUCT.md`.
+
+### Changed
+
+- **Composer** — restore Symfony component constraints to `^7.4 || ^8.0` (regressed after v1.0.4).
+- **Tests** — `RequestStack` construction in `GateTest` aligned with Symfony constructor style (Rector).
+- **Chore** — refresh `composer.lock` (php-cs-fixer, phpstan, rector, Symfony 8.x lock pins).
 
 ## [1.0.4] - 2026-07-24
 
