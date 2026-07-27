@@ -1,5 +1,11 @@
 # Upgrading
 
+## 1.0.6
+
+No application or API changes. If you only consume the Packagist package, no upgrade steps.
+
+**Contributors:** [CONTRIBUTING.md](CONTRIBUTING.md) notes that `nowo-tech/phpstan-frankenphp` is QA-only. GitHub repository About metadata (REQ-DOCS-018) was filled for Packagist discovery.
+
 ## 1.0.5
 
 No breaking public API changes.

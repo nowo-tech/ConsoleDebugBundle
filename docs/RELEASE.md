@@ -3,18 +3,18 @@
 1. Update [CHANGELOG.md](CHANGELOG.md): move entries from `[Unreleased]` to a new `[X.Y.Z] - YYYY-MM-DD` section. (This project does not store version in `composer.json`; Packagist uses the git tag.)
 2. Update [UPGRADING.md](UPGRADING.md) if the release has upgrade notes.
 3. Run pre-release checks: `make release-check` (includes `check-no-cursor-coauthor`, cs-fix, cs-check, rector-dry, phpstan, test-coverage, and demo release-check).
-4. Commit all changes, create an annotated tag (e.g. `v1.0.5`), and push branch and tag. The release workflow creates the GitHub Release from the changelog.
+4. Commit all changes, create an annotated tag (e.g. `v1.0.6`), and push branch and tag. The release workflow creates the GitHub Release from the changelog.
 5. Confirm Packagist auto-update (or trigger manual sync).
 
 Do **not** include Cursor `Co-authored-by` trailers in release commits (REQ-GIT-001). See [GITHUB_CI.md](GITHUB_CI.md).
 
-## Example for v1.0.5
+## Example for v1.0.6
 
 ```bash
-git add docs/CHANGELOG.md docs/UPGRADING.md docs/RELEASE.md docs/CONTRIBUTING.md README.md
+git add docs/CHANGELOG.md docs/UPGRADING.md docs/RELEASE.md docs/CONTRIBUTING.md
 git status   # review
-git commit -m "Release v1.0.5: docs CoC link order (REQ-DOCS-002/015)"
-git tag -a v1.0.5 -m "Release v1.0.5: docs CoC link order (REQ-DOCS-002/015)"
+git commit -m "Release v1.0.6: CONTRIBUTING PHPStan FrankenPHP and GitHub About"
+git tag -a v1.0.6 -m "Release v1.0.6: CONTRIBUTING PHPStan FrankenPHP and GitHub About"
 git push origin main
-git push origin v1.0.5
+git push origin v1.0.6
 ```

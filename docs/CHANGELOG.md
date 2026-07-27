@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.6] - 2026-07-27](#106---2026-07-27)
 - [[1.0.5] - 2026-07-27](#105---2026-07-27)
 - [[1.0.4] - 2026-07-24](#104---2026-07-24)
 - [[1.0.3] - 2026-07-22](#103---2026-07-22)
@@ -16,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.6] - 2026-07-27
+
+### Documentation
+
+- **REQ-CS-005** — [CONTRIBUTING.md](CONTRIBUTING.md) documents PHPStan FrankenPHP classic + worker rulesets as require-dev only.
+- **REQ-DOCS-018** — GitHub About: plain-text description, Packagist website, and topics (`php`, `symfony`, `symfony-bundle`, `frankenphp`, …).
 
 ## [1.0.5] - 2026-07-27
 
