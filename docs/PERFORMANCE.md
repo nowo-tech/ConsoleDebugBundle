@@ -2,6 +2,19 @@
 
 This bundle is designed for **occasional, authorized debugging** in production-like environments. It is not a zero-cost no-op, but under normal conditions the overhead is **small and predictable**. There is no background worker, no database, and no I/O beyond the HTTP response you already send.
 
+## Table of contents
+
+- [Short answer](#short-answer)
+- [What runs on each request](#what-runs-on-each-request)
+  - [1. Kernel response subscriber (always registered)](#1-kernel-response-subscriber-always-registered)
+  - [2. Each `cdbg()` / Twig call (gate closed)](#2-each-cdbg-twig-call-gate-closed)
+  - [3. Each `cdbg()` / Twig call (gate open)](#3-each-cdbg-twig-call-gate-open)
+  - [4. HTML response injection (gate open + registry not empty)](#4-html-response-injection-gate-open-registry-not-empty)
+- [Compared to alternatives](#compared-to-alternatives)
+- [Recommendations](#recommendations)
+- [Configuration levers](#configuration-levers)
+- [Summary](#summary)
+
 ## Short answer
 
 | Scenario | Server impact |
@@ -106,7 +119,7 @@ See [Configuration](CONFIGURATION.md) for all options.
 
 ## Summary
 
-- **No reseñable penalty** for anonymous users or when the bundle is disabled: one cheap gate check per call.
+- **No measurable penalty** for anonymous users or when the bundle is disabled: one cheap gate check per call.
 - **Low penalty** for authorized HTML debugging with a few small `cdbg()` calls — the intended use case.
 - **Measurable penalty** only when you collect large payloads, call debug very often, or inject into large HTML responses.
 

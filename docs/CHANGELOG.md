@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.7] - 2026-07-28](#107---2026-07-28)
 - [[1.0.6] - 2026-07-27](#106---2026-07-27)
 - [[1.0.5] - 2026-07-27](#105---2026-07-27)
 - [[1.0.4] - 2026-07-24](#104---2026-07-24)
@@ -17,6 +18,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.7] - 2026-07-28
+
+### Added
+
+- **`make demo-smoke`** + `.github/workflows/demo-smoke.yml`: boot `demo/symfony8` and assert HTTP 200 (REQ-TEST-011).
+- **REQ-SF-005**: `SYMFONY_DEPRECATIONS_HELPER=max[direct]=0` in `phpunit.xml.dist` and CI test jobs.
+
+### Changed
+
+- Default sample config `console_method` aligned to `log` (recipe + `src/Resources/config/packages`).
+- **Composer** — restore Symfony component constraints to `^7.4 || ^8.0` (narrowed again by a post-1.0.5 CS Fixer commit).
+
+### Fixed
+
+- **CI** — Code Style job discards `composer.json` / `composer.lock` mutations from the temporary Symfony 7.4 pin before auto-committing CS Fixer changes (prevents `^7.4 || ^8.0` from being rewritten to `^7.4`).
+
+### Documentation
+
+- Table of contents on long docs (REQ-DOCS-005).
+- `docs/PERFORMANCE.md`: English wording (REQ-DOCS-016).
+- `docs/SECURITY.md`: logging/observability policy (REQ-OBS-001); AI audit Pass (conditional) (REQ-SEC-004); checklist heading aligned to 12.4.1.
+- `docs/DEMO-FRANKENPHP.md`: demo-smoke command and URL.
 
 ## [1.0.6] - 2026-07-27
 

@@ -13,6 +13,15 @@ Each demo uses:
 
 **Default development stack:** `docker-compose.yml` sets **`APP_ENV=dev`**, **`APP_DEBUG=1`**, and **`FRANKENPHP_MODE=worker`**, and mounts **`docker/php-dev.ini`**. Use `FRANKENPHP_MODE=classic` when you need one PHP process per request (hot-reload / first-boot before `composer install`).
 
+## Table of contents
+
+- [Quick start](#quick-start)
+- [Development stack in demos](#development-stack-in-demos)
+- [Switching classic vs worker (`FRANKENPHP_MODE`)](#switching-classic-vs-worker-frankenphp_mode)
+- [Production](#production)
+- [Troubleshooting](#troubleshooting)
+- [Demo smoke (REQ-TEST-011)](#demo-smoke-req-test-011)
+
 ## Quick start
 
 From the bundle root:
@@ -75,3 +84,13 @@ For a production-like run, keep `FRANKENPHP_MODE=worker` (default), set `APP_ENV
 - If routes/config changed, run `make -C demo/symfony7 cache-clear` (or `symfony8`).
 - If dependencies are outdated, run `make -C demo/symfony7 update-bundle` (or `symfony8`).
 - Unknown `FRANKENPHP_MODE` values fail fast in `docker/entrypoint.sh`.
+
+## Demo smoke (REQ-TEST-011)
+
+Automated smoke proves the Symfony 8 FrankenPHP demo boots and returns **HTTP 200**:
+
+```bash
+make demo-smoke
+```
+
+This runs `make -C demo/symfony8 up`, then `curl` against `http://localhost:8011/` (or `PORT` from `.env` / `.env.example`). CI runs the same target via `.github/workflows/demo-smoke.yml` (schedule / tag / workflow_dispatch). For both demos in sequence, use `make -C demo release-verify`.

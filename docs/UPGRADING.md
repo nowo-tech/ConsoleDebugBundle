@@ -1,5 +1,26 @@
 # Upgrading
 
+## Table of contents
+
+- [1.0.7](#107)
+- [1.0.6](#106)
+- [1.0.5](#105)
+- [1.0.4](#104)
+- [1.0.3](#103)
+- [1.0.2](#102)
+- [1.0.1](#101)
+- [1.0.0](#100)
+
+## 1.0.7
+
+No breaking public API changes.
+
+**Sample / recipe config:** the packaged default for `console_method` is **`log`** (was `info` in the sample YAML under `src/Resources/config/packages`). If you relied on copying that sample verbatim and preferred `info`, set `console_method: info` explicitly in your app config.
+
+**Applications on Symfony 8:** package constraints again allow `symfony/*` `^7.4 || ^8.0` (a post-1.0.5 CS Fixer commit had narrowed them to `^7.4` only).
+
+**Contributors / CI:** PHPUnit and CI set `SYMFONY_DEPRECATIONS_HELPER=max[direct]=0` (REQ-SF-005). Use `make demo-smoke` (or the Demo smoke workflow) to verify the Symfony 8 FrankenPHP demo returns HTTP 200.
+
 ## 1.0.6
 
 No application or API changes. If you only consume the Packagist package, no upgrade steps.
