@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.8] - 2026-07-29](#108---2026-07-29)
 - [[1.0.7] - 2026-07-28](#107---2026-07-28)
 - [[1.0.6] - 2026-07-27](#106---2026-07-27)
 - [[1.0.5] - 2026-07-27](#105---2026-07-27)
@@ -18,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.8] - 2026-07-29
+
+### Changed
+
+- **Makefiles (REQ-MAKE-010)** — prefer Docker Compose V2 (`docker compose`) with fallback to `docker-compose` V1 in root and demo Makefiles; resolve `docker` via absolute path so GNU Make does not collide with a local `docker/` directory when `PATH` has empty entries.
+- **Makefiles (REQ-MAKE-009)** — monorepo `update-deps` includes are optional (`-include`) so standalone GitHub Actions checkouts do not fail.
 
 ## [1.0.7] - 2026-07-28
 

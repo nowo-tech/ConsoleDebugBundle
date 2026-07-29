@@ -2,6 +2,7 @@
 
 ## Table of contents
 
+- [1.0.8](#108)
 - [1.0.7](#107)
 - [1.0.6](#106)
 - [1.0.5](#105)
@@ -10,6 +11,12 @@
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.0.8
+
+No application or API changes. If you only consume the Packagist package, no upgrade steps.
+
+**Contributors / CI:** Makefiles prefer `docker compose` (V2) and fall back to `docker-compose` (V1), using an absolute `docker` path so demos with a local `docker/` directory keep working under GNU Make. Shared monorepo `update-deps` Makefile fragments are optional so cloning only this repo (e.g. GitHub Actions) no longer errors on missing `../.scripts/*.mk`.
 
 ## 1.0.7
 

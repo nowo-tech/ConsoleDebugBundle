@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/console-debug-bundle",
-                "reference": "608300a98172cfb07e2e965f98b57d514a447944"
+                "reference": "b896271785f19fafba7dcdbfd9033d07dcf5d12d"
             },
             "require": {
                 "php": ">=8.1 <8.6",
