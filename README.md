@@ -43,6 +43,12 @@ security:
     ROLE_CONSOLE_DEBUG: ROLE_USER
 ```
 
+## Requirements
+
+- PHP `>=8.1` (<8.6); **Symfony 8.0** and **8.1** require **PHP 8.4+**
+- Symfony **7.4**, **8.0**, or **8.1** (minimum supported minors; also works on Symfony 6.x and 7.0–7.3 via `composer.json` constraints)
+- `symfony/security-bundle` (or equivalent) in your application for role-based gates
+
 ## Configuration
 
 ```yaml
@@ -87,6 +93,26 @@ Same behaviour as Symfony's native `dump`, but output goes to the browser consol
 
 When called empty, the label is `twig context` and the template name/line is used as the source location.
 
+## Demo
+
+- `demo/symfony7` — Symfony **7.4**, host port **8010** by default (`PORT` in `.env`)
+- `demo/symfony8` — Symfony **8.1** (PHP **8.5**), host port **8011** by default
+
+Each demo runs **FrankenPHP + Caddy** in Docker (`FRANKENPHP_MODE=worker` by default). Login as `debugger / debug` and visit `/debug` to see `cdbg()` in the browser console. See [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
+
+Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
+
+## Development
+
+```bash
+make up
+make install
+make test
+make cs-check
+make phpstan
+make release-check
+```
+
 ## Documentation
 
 - [Installation](docs/INSTALLATION.md)
@@ -107,32 +133,6 @@ When called empty, the label is `twig context` and the template name/line is use
 - [Performance](docs/PERFORMANCE.md)
 - [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
 - [GitHub CI notes](docs/GITHUB_CI.md)
-
-## Requirements
-
-- PHP `>=8.1` (<8.6); **Symfony 8.0** and **8.1** require **PHP 8.4+**
-- Symfony **7.4**, **8.0**, or **8.1** (minimum supported minors; also works on Symfony 6.x and 7.0–7.3 via `composer.json` constraints)
-- `symfony/security-bundle` (or equivalent) in your application for role-based gates
-
-## Development
-
-```bash
-make up
-make install
-make test
-make cs-check
-make phpstan
-make release-check
-```
-
-## Demo
-
-- `demo/symfony7` — Symfony **7.4**, host port **8010** by default (`PORT` in `.env`)
-- `demo/symfony8` — Symfony **8.1** (PHP **8.5**), host port **8011** by default
-
-Each demo runs **FrankenPHP + Caddy** in Docker (`FRANKENPHP_MODE=worker` by default). Login as `debugger / debug` and visit `/debug` to see `cdbg()` in the browser console. See [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).
-
-Global demo commands: `make -C demo help` (e.g. `make -C demo up-symfony8`).
 
 ## Tests and coverage
 
