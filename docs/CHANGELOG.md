@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.9] - 2026-08-04](#109-2026-08-04)
 - [[1.0.8] - 2026-07-29](#108---2026-07-29)
 - [[1.0.7] - 2026-07-28](#107---2026-07-28)
 - [[1.0.6] - 2026-07-27](#106---2026-07-27)
@@ -19,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.9] - 2026-08-04
+
+### Fixed
+- **CI (Symfony 6.4):** build `RequestStack` via `push()` so query-param gate tests work without the 7.2+ constructor.
+
+[1.0.9]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.0.9
 
 ## [1.0.8] - 2026-07-29
 
