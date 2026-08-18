@@ -1,4 +1,4 @@
-DEMOS := symfony7 symfony8
+DEMOS := symfony8
 
 .PHONY: help clean test-all test-coverage-all verify-all release-check release-verify update-bundle-all
 .PHONY: $(foreach demo,$(DEMOS),up-$(demo) down-$(demo) restart-$(demo) build-$(demo) install-$(demo) update-bundle-$(demo) shell-$(demo) logs-$(demo) test-$(demo) test-coverage-$(demo) verify-$(demo))
@@ -9,14 +9,13 @@ help:
 	@echo ""
 	@echo "Usage: make <target>"
 	@echo ""
-	@echo "  up-symfony7 / down-symfony7 / restart-symfony7"
 	@echo "  up-symfony8 / down-symfony8 / restart-symfony8"
 	@echo "  build-symfonyX, install-symfonyX, update-bundle-symfonyX"
 	@echo "  test-symfonyX, test-coverage-symfonyX"
 	@echo "  release-check    Run update-bundle-all + test-all + release-verify"
 	@echo "  release-verify   For each demo: up -> healthcheck -> down"
 	@echo ""
-	@echo "Access: Symfony 7 http://localhost:8010 | Symfony 8 http://localhost:8011"
+	@echo "Access: Symfony 8 http://localhost:8011"
 
 define target_template
 $(1)-$(2):
@@ -48,52 +47,52 @@ update-bundle-all:
 	@$(foreach d,$(DEMOS),$(MAKE) update-bundle-$(d);)
 
 up:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make up DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make up DEMO=symfony8"; exit 1; }
 	@$(MAKE) up-$(DEMO)
 
 down:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make down DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make down DEMO=symfony8"; exit 1; }
 	@$(MAKE) down-$(DEMO)
 
 restart:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make restart DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make restart DEMO=symfony8"; exit 1; }
 	@$(MAKE) restart-$(DEMO)
 
 build:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make build DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make build DEMO=symfony8"; exit 1; }
 	@$(MAKE) build-$(DEMO)
 
 install:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make install DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make install DEMO=symfony8"; exit 1; }
 	@$(MAKE) install-$(DEMO)
 
 update-bundle:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make update-bundle DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make update-bundle DEMO=symfony8"; exit 1; }
 	@$(MAKE) update-bundle-$(DEMO)
 
 test:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make test DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make test DEMO=symfony8"; exit 1; }
 	@$(MAKE) test-$(DEMO)
 
 test-coverage:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make test-coverage DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make test-coverage DEMO=symfony8"; exit 1; }
 	@$(MAKE) test-coverage-$(DEMO)
 
 shell:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make shell DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make shell DEMO=symfony8"; exit 1; }
 	@$(MAKE) shell-$(DEMO)
 
 logs:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make logs DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make logs DEMO=symfony8"; exit 1; }
 	@$(MAKE) logs-$(DEMO)
 
 verify:
-	@[ -n "$(DEMO)" ] || { echo "Usage: make verify DEMO=symfony7|symfony8"; exit 1; }
+	@[ -n "$(DEMO)" ] || { echo "Usage: make verify DEMO=symfony8"; exit 1; }
 	@$(MAKE) verify-$(DEMO)
 
 release-verify:
 	@for demo in $(DEMOS); do \
-		port=$$( [ "$$demo" = "symfony7" ] && echo 8010 || echo 8011 ); \
+		port=8011; \
 		echo "Release verify: $$demo (port $$port)"; \
 		$(MAKE) up-$$demo; sleep 12; \
 		code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
@@ -105,9 +104,8 @@ release-verify:
 release-check: update-bundle-all test-all release-verify
 
 clean:
-	@rm -rf symfony7/var symfony8/var
+	@rm -rf $(addsuffix /var,$(DEMOS))
 	@echo "Demo caches cleaned"
-
 
 # REQ-MAKE-008: update-deps-all (REQ-MAKE-008)
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)

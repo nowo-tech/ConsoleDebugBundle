@@ -95,7 +95,6 @@ When called empty, the label is `twig context` and the template name/line is use
 
 ## Demo
 
-- `demo/symfony7` — Symfony **7.4**, host port **8010** by default (`PORT` in `.env`)
 - `demo/symfony8` — Symfony **8.1** (PHP **8.5**), host port **8011** by default
 
 Each demo runs **FrankenPHP + Caddy** in Docker (`FRANKENPHP_MODE=worker` by default). Login as `debugger / debug` and visit `/debug` to see `cdbg()` in the browser console. See [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md).

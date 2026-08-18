@@ -11,7 +11,7 @@ Do **not** include Cursor `Co-authored-by` trailers in release commits (REQ-GIT-
 ## Example for v1.0.8
 
 ```bash
-git add Makefile demo/Makefile demo/symfony7/Makefile demo/symfony8/Makefile docs/CHANGELOG.md docs/UPGRADING.md docs/RELEASE.md
+git add Makefile demo/Makefile demo/symfony8/Makefile demo/symfony8/Makefile docs/CHANGELOG.md docs/UPGRADING.md docs/RELEASE.md
 git status   # review
 git commit -m "Release v1.0.8: Compose V2 Makefiles and optional monorepo includes"
 git tag -a v1.0.8 -m "Release v1.0.8: Compose V2 Makefiles and optional monorepo includes"
