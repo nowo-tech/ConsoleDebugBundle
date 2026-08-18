@@ -2,7 +2,6 @@
 
 This bundle includes runnable demos with FrankenPHP in:
 
-- `demo/symfony7` — Symfony **7.4** (FrankenPHP PHP **8.4**)
 - `demo/symfony8` — Symfony **8.1** (FrankenPHP PHP **8.5**, REQ-DEMO-010)
 
 Each demo uses:
@@ -27,7 +26,7 @@ Each demo uses:
 From the bundle root:
 
 ```bash
-make -C demo up-symfony7
+make -C demo up-symfony8
 # or
 make -C demo up-symfony8
 ```
@@ -43,6 +42,7 @@ Both demos include:
 
 - **Symfony Debug** (`symfony/debug-bundle`)
 - **Symfony Web Profiler** (`symfony/web-profiler-bundle`)
+- **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`) and **Nowo Hot Reload** (`nowo-tech/hot-reload-bundle`) — required together on FrankenPHP demos (dev/test only; Caddyfile Mercure + `hot_reload`, plus `worker { watch }` in worker mode). Do not enable Hot Reload in production.
 - **`APP_DEBUG=1`** in `.env.example`
 - **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`)
 
@@ -80,9 +80,9 @@ For a production-like run, keep `FRANKENPHP_MODE=worker` (default), set `APP_ENV
 
 ## Troubleshooting
 
-- If app does not respond, run `make -C demo/symfony7 logs` or `make -C demo/symfony8 logs`.
-- If routes/config changed, run `make -C demo/symfony7 cache-clear` (or `symfony8`).
-- If dependencies are outdated, run `make -C demo/symfony7 update-bundle` (or `symfony8`).
+- If app does not respond, run `make -C demo/symfony8 logs` or `make -C demo/symfony8 logs`.
+- If routes/config changed, run `make -C demo/symfony8 cache-clear` (or `symfony8`).
+- If dependencies are outdated, run `make -C demo/symfony8 update-bundle` (or `symfony8`).
 - Unknown `FRANKENPHP_MODE` values fail fast in `docker/entrypoint.sh`.
 
 ## Demo smoke (REQ-TEST-011)
