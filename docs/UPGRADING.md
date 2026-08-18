@@ -2,6 +2,7 @@
 
 ## Table of contents
 
+- [1.0.10](#1010)
 - [1.0.8](#108)
 - [1.0.7](#107)
 - [1.0.6](#106)
@@ -11,6 +12,10 @@
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.0.10
+
+No application or API changes. Demos only: Hot Reload Bundle `^1.4`; Symfony 8 is the only shipped demo (Symfony 6/7 demo apps removed).
 
 ## 1.0.8
 
