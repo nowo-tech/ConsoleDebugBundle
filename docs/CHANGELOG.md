@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.10] - 2026-08-18](#1010-2026-08-18)
 - [[1.0.9] - 2026-08-04](#109-2026-08-04)
 - [[1.0.8] - 2026-07-29](#108---2026-07-29)
 - [[1.0.7] - 2026-07-28](#107---2026-07-28)
@@ -20,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.10] - 2026-08-18
+
+### Changed
+
+- **Demos:** pin `nowo-tech/hot-reload-bundle` to `^1.4` with FrankenPHP Mercure/`hot_reload` (`dev`/`test` only).
+- **Demos:** Symfony 8 only; Symfony 6/7 demo apps removed.
+
+[1.0.10]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.0.10
 
 ## [1.0.9] - 2026-08-04
 
