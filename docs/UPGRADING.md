@@ -2,6 +2,7 @@
 
 ## Table of contents
 
+- [1.0.11](#1011)
 - [1.0.10](#1010)
 - [1.0.8](#108)
 - [1.0.7](#107)
@@ -12,6 +13,14 @@
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## 1.0.11
+
+No application upgrade steps.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
 
 ## 1.0.10
 
