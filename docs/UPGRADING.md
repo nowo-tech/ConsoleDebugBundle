@@ -2,6 +2,8 @@
 
 ## Table of contents
 
+
+- [From 1.0.11 to 1.0.12](#from-1011-to-1012)
 - [1.0.11](#1011)
 - [1.0.10](#1010)
 - [1.0.8](#108)
@@ -13,6 +15,22 @@
 - [1.0.2](#102)
 - [1.0.1](#101)
 - [1.0.0](#100)
+
+## From 1.0.11 to 1.0.12
+
+Review the [CHANGELOG](CHANGELOG.md) entry. PHP **8.2+** may now be required.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
+
+## From 1.0.11 to 1.0.12
+
+Review the [CHANGELOG](CHANGELOG.md) entry. PHP **8.2+** may now be required.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
 
 ## 1.0.11
 
