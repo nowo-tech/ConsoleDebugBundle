@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.13] - 2026-09-24](#1013---2026-09-24)
+- [[1.0.12] - 2026-08-24](#1012---2026-08-24)
+- [[1.0.11] - 2026-08-19](#1011---2026-08-19)
 - [[1.0.10] - 2026-08-18](#1010-2026-08-18)
 - [[1.0.9] - 2026-08-04](#109-2026-08-04)
 - [[1.0.8] - 2026-07-29](#108---2026-07-29)
@@ -22,6 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.13] - 2026-09-24
+
+### Fixed
+
+- **FrankenPHP worker mode (no kernel reset between requests):** `ConsoleDebugRegistry` entries could survive a request that did not produce an injectable HTML response (JSON, streamed, binary, already injected) and be injected into the next user's HTML page when `services_resetter` did not run. The registry is now cleared at the start of every main request (`ConsoleDebugHolderRequestSubscriber`, new optional `$registry` argument) and after every main response (`ConsoleDebugResponseSubscriber`, injected or not). See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+
+### Documentation
+
+- Published worker audit (`docs/FRANKENPHP-WORKER-AUDIT.md`); linked from README and [DEMO-FRANKENPHP.md](DEMO-FRANKENPHP.md).
+
+### Chore
+
+- Align `GateTest` `RequestStack` construction with Symfony 7.2+ constructor (Rector).
 
 ## [1.0.12] - 2026-08-24
 

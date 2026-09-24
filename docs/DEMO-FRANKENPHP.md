@@ -17,6 +17,7 @@ Each demo uses:
 - [Quick start](#quick-start)
 - [Development stack in demos](#development-stack-in-demos)
 - [Switching classic vs worker (`FRANKENPHP_MODE`)](#switching-classic-vs-worker-frankenphp_mode)
+- [Worker safety (no kernel reset)](#worker-safety-no-kernel-reset)
 - [Production](#production)
 - [Troubleshooting](#troubleshooting)
 - [Demo smoke (REQ-TEST-011)](#demo-smoke-req-test-011)
@@ -73,6 +74,10 @@ Demos select the FrankenPHP runtime via **`FRANKENPHP_MODE`** in `.env` / `.env.
 | **`classic`** | Entrypoint copies `Caddyfile.dev` (plain `php_server`, hot-reload / first-boot friendly) |
 
 Compose passes `FRANKENPHP_MODE=${FRANKENPHP_MODE:-worker}` into the PHP service. After changing `.env`, run `docker compose up -d` (or `make up`) so the container is **recreated** — a plain `restart` does not reload env. No image rebuild is required.
+
+## Worker safety (no kernel reset)
+
+The bundle keeps `cdbg()` payloads request-scoped even when FrankenPHP reuses the kernel without `services_resetter` / `kernel.reset`: the registry is cleared on every main `kernel.request` and after every main `kernel.response`. Full review: [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 
 ## Production
 

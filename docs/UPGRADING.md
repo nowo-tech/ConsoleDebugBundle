@@ -2,7 +2,7 @@
 
 ## Table of contents
 
-
+- [1.0.13](#1013)
 - [From 1.0.11 to 1.0.12](#from-1011-to-1012)
 - [1.0.11](#1011)
 - [1.0.10](#1010)
@@ -16,9 +16,15 @@
 - [1.0.1](#101)
 - [1.0.0](#100)
 
-## From 1.0.11 to 1.0.12
+## 1.0.13
 
-Review the [CHANGELOG](CHANGELOG.md) entry. PHP **8.2+** may now be required.
+No configuration changes. Behaviour notes for FrankenPHP worker mode without kernel reset:
+
+1. `cdbg()` entries collected during a request whose main response is not injectable HTML (JSON, XML, streamed or binary responses, or a page that already contains the script) are now discarded at the end of that response instead of being kept for the next HTML page.
+2. The registry is emptied on every main `kernel.request` (priority 1024). Entries recorded before that point of a request are dropped.
+3. `ConsoleDebugHolderRequestSubscriber` accepts a new optional second constructor argument (`?ConsoleDebugRegistry $registry`); the bundle wires it automatically.
+
+See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 
 ```bash
 composer update nowo-tech/console-debug-bundle

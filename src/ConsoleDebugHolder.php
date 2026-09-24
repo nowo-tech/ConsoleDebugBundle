@@ -12,7 +12,8 @@ use LogicException;
  * Avoids mutable static properties (FrankenPHP worker-safe). The ConsoleDebug
  * service reference is stored under a dedicated $_SERVER key and re-bound on
  * each kernel.request (FrankenPHP resets $_SERVER between worker iterations).
- * Request payloads live in ConsoleDebugRegistry (ResetInterface / kernel.reset).
+ * Request payloads live in ConsoleDebugRegistry (cleared on each main request/response;
+ * also ResetInterface / kernel.reset when the services resetter runs).
  */
 final class ConsoleDebugHolder
 {

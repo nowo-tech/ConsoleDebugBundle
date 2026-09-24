@@ -29,6 +29,7 @@ Console Debug Bundle injects debug data into **HTML responses** as inline JavaSc
 | Threat | Mitigation |
 |--------|------------|
 | Data leak to unauthorized users | Default gate requires authentication + configured roles; use `gate_service` for stricter rules in production. |
+| Cross-request leak in FrankenPHP worker (no kernel reset) | Registry cleared on every main `kernel.request` and after every main `kernel.response` (not only when HTML is injected); also `ResetInterface` / `kernel.reset`. See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md). |
 | XSS via injected script | Payload is `json_encode`d with `JSON_HEX_*` flags inside `<script type="application/json">`; runner script uses `JSON.parse()`. Do not pass unescaped HTML expecting safe rendering in console. |
 | Sensitive data in console output | Avoid `cdbg()` on secrets, tokens, PII; restrict `ROLE_CONSOLE_DEBUG` to trusted staff only. |
 | Debug left enabled in production | `enabled: true` is intentional for gated prod debugging; combine with role + query param or custom gate. |

@@ -9,8 +9,9 @@ use Symfony\Contracts\Service\ResetInterface;
 /**
  * Request-scoped storage for console debug entries.
  *
- * Implements ResetInterface so FrankenPHP worker (and long-lived FPM) clear
- * entries between requests even if the response subscriber path is skipped.
+ * Cleared on every main kernel.request and after every main kernel.response so
+ * entries never leak across requests when FrankenPHP runs without kernel reset.
+ * Also implements ResetInterface (kernel.reset) when the services resetter runs.
  */
 final class ConsoleDebugRegistry implements ResetInterface
 {

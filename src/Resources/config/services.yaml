@@ -37,6 +37,7 @@ services:
     Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugHolderRequestSubscriber:
         arguments:
             $consoleDebug: '@nowo.console_debug'
+            $registry: '@nowo.console_debug.registry'
         tags:
             - { name: kernel.event_subscriber }
 

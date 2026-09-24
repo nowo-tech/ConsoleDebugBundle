@@ -51,7 +51,7 @@ final class ConsoleDebugResponseSubscriberTest extends TestCase
         $subscriber->onKernelResponse(new ResponseEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $response));
 
         self::assertSame('{"ok":true}', $response->getContent());
-        self::assertCount(1, $registry->all());
+        self::assertTrue($registry->isEmpty(), 'Entries of a non-HTML response must not survive to the next request');
     }
 
     public function testAppendsScriptWhenBodyTagIsMissing(): void
@@ -76,13 +76,15 @@ final class ConsoleDebugResponseSubscriberTest extends TestCase
         $subscriber = new ConsoleDebugResponseSubscriber($registry, 'info', '[cdbg]');
         $kernel     = $this->createMock(HttpKernelInterface::class);
 
-        $empty = new Response('', 200, ['Content-Type' => 'text/html']);
-        $subscriber->onKernelResponse(new ResponseEvent($kernel, Request::create('/'), HttpKernelInterface::MAIN_REQUEST, $empty));
-        self::assertCount(1, $registry->all());
-
         $sub = new Response('<html><body>x</body></html>', 200, ['Content-Type' => 'text/html']);
         $subscriber->onKernelResponse(new ResponseEvent($kernel, Request::create('/'), HttpKernelInterface::SUB_REQUEST, $sub));
         self::assertStringNotContainsString('data-nowo-console-debug', (string) $sub->getContent());
+        self::assertCount(1, $registry->all(), 'Sub-requests keep entries for the main response');
+
+        $empty = new Response('', 200, ['Content-Type' => 'text/html']);
+        $subscriber->onKernelResponse(new ResponseEvent($kernel, Request::create('/'), HttpKernelInterface::MAIN_REQUEST, $empty));
+        self::assertSame('', $empty->getContent());
+        self::assertTrue($registry->isEmpty());
     }
 
     public function testSkipsWhenScriptAlreadyPresent(): void
@@ -97,6 +99,7 @@ final class ConsoleDebugResponseSubscriberTest extends TestCase
         $subscriber->onKernelResponse(new ResponseEvent($kernel, Request::create('/'), HttpKernelInterface::MAIN_REQUEST, $response));
 
         self::assertSame($html, $response->getContent());
+        self::assertTrue($registry->isEmpty());
     }
 
     public function testInjectsWhenMarkerAppearsOnlyInPageCopy(): void

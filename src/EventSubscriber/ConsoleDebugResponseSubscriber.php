@@ -46,6 +46,17 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Entries belong to this response only: never keep them for a later request,
+        // whether or not they could be injected (JSON, streamed, binary, already injected).
+        try {
+            $this->inject($event);
+        } finally {
+            $this->registry->clear();
+        }
+    }
+
+    private function inject(ResponseEvent $event): void
+    {
         $response = $event->getResponse();
         $content  = $response->getContent();
 
@@ -76,7 +87,6 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         }
 
         $response->setContent($content);
-        $this->registry->clear();
     }
 
     private function isHtmlResponse(string $contentType): bool
