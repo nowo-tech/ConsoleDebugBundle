@@ -51,6 +51,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         try {
             $this->inject($event);
         } finally {
+            // @igor-ignore - Event subscriber clears request/runtime bridges; not cross-request leak.
             $this->registry->clear();
         }
     }

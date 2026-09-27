@@ -109,6 +109,7 @@ make install
 make test
 make cs-check
 make phpstan
+make igor
 make release-check
 ```
 

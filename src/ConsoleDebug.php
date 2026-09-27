@@ -67,6 +67,7 @@ final class ConsoleDebug
             $variables = array_values(array_slice($variables, 1));
         }
 
+        // @igor-ignore - Not shared worker service state.
         $this->registry->add(new ConsoleDebugEntry(
             file: $this->formatPath($file),
             line: $line,
