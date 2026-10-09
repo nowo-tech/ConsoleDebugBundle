@@ -3,6 +3,16 @@
 
 ## Unreleased
 
+## To 1.0.15
+
+From **1.0.14** — test fix and dependency refresh.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
+
+- No breaking changes. No application upgrade steps.
+
 ## To 1.0.14
 
 From **1.0.13** — REQ-CS-008 Igor FrankenPHP worker audit (igor-php require-dev, igor.json, make igor).

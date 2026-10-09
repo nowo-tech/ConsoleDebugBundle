@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.0.15] - 2026-10-09](#1015---2026-10-09)
+  - [Fixed](#fixed)
+  - [Dependencies](#dependencies)
 - [[1.0.14] - 2026-09-27](#1014---2026-09-27)
 - [[1.0.13] - 2026-09-24](#1013---2026-09-24)
 - [[1.0.12] - 2026-08-24](#1012---2026-08-24)
@@ -25,6 +28,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.0.15] - 2026-10-09
+
+### Fixed
+
+- **Tests:** `GateTest` builds `RequestStack` via `push()` so the query-param gate tests run on the Symfony 6.4 CI matrix (the array constructor is Symfony 7.2+).
+
+### Dependencies
+
+- Dependabot: `symfony/framework-bundle` and `friendsofphp/php-cs-fixer` 3.95.27 (dev) lockfile bumps.
+- Composer refresh: `symfony/security-core` 8.1.8; dev tooling `phpstan/phpstan` 2.3.1, `phpstan/phpstan-symfony` 2.1.0, `rector/rector` 2.7.0, `nowo-tech/phpstan-frankenphp` 1.2.3.
+- Demo: Symfony 8.1.8, PHPUnit 13.4.1, `nowo-tech/password-toggle-bundle` 2.2.3; regenerated `config/reference.php`.
+
+[1.0.15]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.0.15
 
 ## [1.0.14] - 2026-09-27
 
