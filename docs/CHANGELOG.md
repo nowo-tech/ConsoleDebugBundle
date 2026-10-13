@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.2.0] - 2026-10-13](#120---2026-10-13)
 - [[1.1.0] - 2026-10-13](#110---2026-10-13)
 - [[1.0.15] - 2026-10-09](#1015---2026-10-09)
   - [Fixed](#fixed)
@@ -30,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-13
+
 ### Added
 
 - CSP nonce support: the injected `<script>` tags carry `nonce="…"` when the request attribute named by the new `csp_nonce_attribute` option (default `csp_nonce`, the shared nowo-tech convention) holds a non-empty string. Set it to `null` to disable.
@@ -37,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - `label_prefix` is JSON-encoded with `JSON_HEX_TAG | JSON_HEX_AMP` inside the inline script, so `<`/`>`/`&` in the prefix can never break out of the `<script>` element.
+
+[1.2.0]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.2.0
 
 ## [1.1.0] - 2026-10-13
 

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## To 1.2.0
+
+From **1.1.0** — CSP nonce stamped on injected console scripts.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
+
 No breaking changes. New option `csp_nonce_attribute` (default `csp_nonce`): under a nonce-based CSP the injected console scripts now run without extra configuration when the nonce is published in the `csp_nonce` request attribute (e.g. by nowo-tech/http-hardening-bundle). Set it to your attribute name if it differs, or to `null` to keep the previous output.
 
 ## To 1.1.0
