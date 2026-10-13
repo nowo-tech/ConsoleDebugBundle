@@ -1144,6 +1144,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     use_toggle_form_theme?: bool|Param, // Use the bundle's form theme for rendering (default) // Default: true
  *     always_empty?: bool|Param, // Always render empty value (default) // Default: true
  *     trim?: bool|Param, // Trim whitespace (default) // Default: false
+ *     javascript?: "web_component"|"stimulus"|"none"|Param, // How the toggle behaviour is attached (all CSP-safe, no inline handlers): "web_component" = widget emits one <script src> for nowo-password-toggle.js (with the CSP nonce); "stimulus" = no script tag, renders data-controller/data-action for the shipped Stimulus controller; "none" = no script tag, the host loads nowo-password-toggle.js itself. // Default: "web_component"
+ *     stimulus_controller?: scalar|Param|null, // Stimulus controller identifier used when javascript is "stimulus". // Default: "nowo-password-toggle"
+ *     csp_nonce_attribute?: scalar|Param|null, // Request attribute holding the CSP nonce; added as nonce="..." to the <script> the widget emits. Empty string disables. // Default: "csp_nonce"
  *     invalid_message?: scalar|Param|null, // Invalid message (default) // Default: "The password is invalid."
  * }
  * @psalm-type NowoConsoleDebugConfig = array{
@@ -1151,6 +1154,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     roles?: list<scalar|Param|null>,
  *     console_method?: scalar|Param|null, // Browser console method: log, info, warn, debug, or error. // Default: "log"
  *     label_prefix?: scalar|Param|null, // Prefix shown in grouped console output. // Default: "[cdbg]"
+ *     csp_nonce_attribute?: scalar|Param|null, // Request attribute holding the CSP nonce stamped on the injected <script> tags (shared nowo-tech convention: csp_nonce). Null or empty disables it. // Default: "csp_nonce"
  *     shorten_paths?: bool|Param, // When true, file paths are shortened relative to kernel.project_dir. // Default: true
  *     query_param?: scalar|Param|null, // Optional query parameter required by the default gate (e.g. console_debug). // Default: null
  *     gate_service?: scalar|Param|null, // Custom gate service id implementing ConsoleDebugGateInterface. Replaces the default gate when set. // Default: null
