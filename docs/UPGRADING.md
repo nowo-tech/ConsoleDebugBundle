@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 1.2.1](#to-121)
 - [To 1.2.0](#to-120)
 - [To 1.1.0](#to-110)
 - [To 1.0.15](#to-1015)
@@ -22,6 +23,16 @@
 - [1.0.0](#100)
 
 ## Unreleased
+
+## To 1.2.1
+
+From **1.2.0** — csp_nonce_attribute validated (string or null).
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
+
+- No breaking changes. No application upgrade steps.
 
 ## To 1.2.0
 
