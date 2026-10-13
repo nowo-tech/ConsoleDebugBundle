@@ -30,6 +30,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CSP nonce support: the injected `<script>` tags carry `nonce="…"` when the request attribute named by the new `csp_nonce_attribute` option (default `csp_nonce`, the shared nowo-tech convention) holds a non-empty string. Set it to `null` to disable.
+
+### Security
+
+- `label_prefix` is JSON-encoded with `JSON_HEX_TAG | JSON_HEX_AMP` inside the inline script, so `<`/`>`/`&` in the prefix can never break out of the `<script>` element.
+
 ## [1.1.0] - 2026-10-13
 
 ### Fixed

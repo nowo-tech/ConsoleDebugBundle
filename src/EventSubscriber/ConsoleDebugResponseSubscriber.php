@@ -10,6 +10,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+use function is_string;
+
+use const ENT_QUOTES;
+use const ENT_SUBSTITUTE;
 use const JSON_HEX_AMP;
 use const JSON_HEX_APOS;
 use const JSON_HEX_QUOT;
@@ -32,6 +36,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         private readonly ConsoleDebugRegistry $registry,
         private readonly string $consoleMethod,
         private readonly string $labelPrefix,
+        private readonly ?string $cspNonceAttribute = 'csp_nonce',
     ) {
     }
 
@@ -88,7 +93,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         }
 
         $method = $this->resolveConsoleMethod();
-        $script = $this->buildScript($method, $payload);
+        $script = $this->buildScript($method, $payload, $this->resolveNonce($event));
 
         if (preg_match('/<\/body>/i', $content) === 1) {
             $content = preg_replace('/<\/body>/i', $script . '</body>', $content, 1) ?? $content;
@@ -121,15 +126,33 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         };
     }
 
-    private function buildScript(string $method, string $payload): string
+    /**
+     * CSP nonce published by the host (e.g. nowo-tech/http-hardening-bundle) in a request attribute.
+     */
+    private function resolveNonce(ResponseEvent $event): string
     {
-        $labelPrefix  = json_encode($this->labelPrefix, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+        if ($this->cspNonceAttribute === null || $this->cspNonceAttribute === '') {
+            return '';
+        }
+
+        $nonce = $event->getRequest()->attributes->get($this->cspNonceAttribute);
+        if (!is_string($nonce) || $nonce === '') {
+            return '';
+        }
+
+        return ' nonce="' . htmlspecialchars($nonce, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"';
+    }
+
+    private function buildScript(string $method, string $payload, string $nonceAttribute): string
+    {
+        // JSON_HEX_TAG: a "</script>" inside label_prefix must not close the inline script.
+        $labelPrefix  = json_encode($this->labelPrefix, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP);
         $scriptMarker = self::SCRIPT_MARKER;
         $dataMarker   = self::DATA_MARKER;
 
         return <<<HTML
-<script type="application/json" {$dataMarker}>{$payload}</script>
-<script {$scriptMarker}>
+<script type="application/json" {$dataMarker}{$nonceAttribute}>{$payload}</script>
+<script {$scriptMarker}{$nonceAttribute}>
 (function () {
   var dataEl = document.querySelector('script[{$dataMarker}]');
   var entries = dataEl ? JSON.parse(dataEl.textContent) : [];

@@ -7,6 +7,7 @@ namespace Nowo\ConsoleDebugBundle\Tests\Unit\EventSubscriber;
 use Nowo\ConsoleDebugBundle\ConsoleDebugEntry;
 use Nowo\ConsoleDebugBundle\ConsoleDebugRegistry;
 use Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugResponseSubscriber;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -190,5 +191,86 @@ final class ConsoleDebugResponseSubscriberTest extends TestCase
         self::assertSame("bad \u{FFFD} label", $decoded[0]['label']);
         self::assertSame(["caf\u{FFFD}", 0, 0, 0, ['nested' => "\u{FFFD}"]], $decoded[0]['variables']);
         self::assertTrue($registry->isEmpty());
+    }
+
+    public function testStampsCspNonceFromRequestAttribute(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $registry->add(new ConsoleDebugEntry('file.php', 1, null, ['x'], 1.0));
+        $subscriber = new ConsoleDebugResponseSubscriber($registry, 'log', '[cdbg]');
+        $request    = Request::create('/');
+        $request->attributes->set('csp_nonce', 'abc123"x');
+        $response = new Response('<html><body></body></html>', 200, ['Content-Type' => 'text/html']);
+
+        $subscriber->onKernelResponse(new ResponseEvent($this->createMock(HttpKernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST, $response));
+
+        $content = (string) $response->getContent();
+        self::assertStringContainsString('<script type="application/json" data-nowo-console-debug-data nonce="abc123&quot;x">', $content);
+        self::assertStringContainsString('<script data-nowo-console-debug nonce="abc123&quot;x">', $content);
+    }
+
+    public function testStampsCspNonceFromConfiguredAttributeName(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $registry->add(new ConsoleDebugEntry('file.php', 1, null, ['x'], 1.0));
+        $subscriber = new ConsoleDebugResponseSubscriber($registry, 'log', '[cdbg]', 'app_nonce');
+        $request    = Request::create('/');
+        $request->attributes->set('csp_nonce', 'ignored');
+        $request->attributes->set('app_nonce', 'n0nce');
+        $response = new Response('<html><body></body></html>', 200, ['Content-Type' => 'text/html']);
+
+        $subscriber->onKernelResponse(new ResponseEvent($this->createMock(HttpKernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST, $response));
+
+        $content = (string) $response->getContent();
+        self::assertStringContainsString('<script data-nowo-console-debug nonce="n0nce">', $content);
+        self::assertStringNotContainsString('ignored', $content);
+    }
+
+    /**
+     * @return iterable<string, array{?string, mixed}>
+     */
+    public static function noNonceProvider(): iterable
+    {
+        yield 'attribute missing' => ['csp_nonce', null];
+        yield 'empty nonce' => ['csp_nonce', ''];
+        yield 'non-string nonce' => ['csp_nonce', ['x']];
+        yield 'feature disabled (null)' => [null, 'abc'];
+        yield 'feature disabled (empty)' => ['', 'abc'];
+    }
+
+    #[DataProvider('noNonceProvider')]
+    public function testOmitsNonceWhenUnavailableOrDisabled(?string $attributeName, mixed $nonce): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $registry->add(new ConsoleDebugEntry('file.php', 1, null, ['x'], 1.0));
+        $subscriber = new ConsoleDebugResponseSubscriber($registry, 'log', '[cdbg]', $attributeName);
+        $request    = Request::create('/');
+        if ($nonce !== null) {
+            $request->attributes->set('csp_nonce', $nonce);
+        }
+        $response = new Response('<html><body></body></html>', 200, ['Content-Type' => 'text/html']);
+
+        $subscriber->onKernelResponse(new ResponseEvent($this->createMock(HttpKernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST, $response));
+
+        $content = (string) $response->getContent();
+        self::assertStringContainsString('<script data-nowo-console-debug>', $content);
+        self::assertStringNotContainsString('nonce=', $content);
+    }
+
+    public function testLabelPrefixCannotCloseTheInlineScript(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $registry->add(new ConsoleDebugEntry('file.php', 1, null, ['x'], 1.0));
+        $subscriber = new ConsoleDebugResponseSubscriber($registry, 'log', '</script><script>alert(1)</script>');
+        $response   = new Response('<html><body></body></html>', 200, ['Content-Type' => 'text/html']);
+
+        $subscriber->onKernelResponse(new ResponseEvent($this->createMock(HttpKernelInterface::class), Request::create('/'), HttpKernelInterface::MAIN_REQUEST, $response));
+
+        $content = (string) $response->getContent();
+        self::assertStringNotContainsString('alert(1)</script>', $content);
+        $lt = '\\u003C';
+        $gt = '\\u003E';
+        self::assertStringContainsString('var prefix = "' . $lt . '\\/script' . $gt . $lt . 'script' . $gt . 'alert(1)' . $lt . '\\/script' . $gt . '";', $content);
+        self::assertSame(2, substr_count($content, '</script>'));
     }
 }

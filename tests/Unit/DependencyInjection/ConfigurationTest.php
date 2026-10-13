@@ -20,6 +20,7 @@ final class ConfigurationTest extends TestCase
         self::assertSame(['ROLE_CONSOLE_DEBUG'], $config['roles']);
         self::assertSame('log', $config['console_method']);
         self::assertSame('[cdbg]', $config['label_prefix']);
+        self::assertSame('csp_nonce', $config['csp_nonce_attribute']);
         self::assertTrue($config['shorten_paths']);
         self::assertNull($config['query_param']);
         self::assertNull($config['gate_service']);

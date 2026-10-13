@@ -41,6 +41,7 @@ nowo_console_debug:
     console_method: log
     label_prefix: '[cdbg]'
     shorten_paths: true
+    csp_nonce_attribute: csp_nonce
 ```
 
 3. Grant a debug role to trusted users:

@@ -60,6 +60,7 @@ nowo_console_debug:
   console_method: log
   label_prefix: '[cdbg]'
   shorten_paths: true
+  csp_nonce_attribute: csp_nonce
   query_param: console_debug
   # gate_service: App\ConsoleDebug\AppConsoleDebugGate
 ```

@@ -32,6 +32,7 @@ final class ConsoleDebugExtension extends Extension
         $container->setParameter('nowo.console_debug.roles', $config['roles']);
         $container->setParameter('nowo.console_debug.console_method', $config['console_method']);
         $container->setParameter('nowo.console_debug.label_prefix', $config['label_prefix']);
+        $container->setParameter('nowo.console_debug.csp_nonce_attribute', $config['csp_nonce_attribute']);
         $container->setParameter('nowo.console_debug.shorten_paths', $config['shorten_paths']);
         $container->setParameter('nowo.console_debug.query_param', $config['query_param']);
 

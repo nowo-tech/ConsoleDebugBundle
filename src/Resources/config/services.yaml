@@ -46,6 +46,7 @@ services:
             $registry: '@nowo.console_debug.registry'
             $consoleMethod: '%nowo.console_debug.console_method%'
             $labelPrefix: '%nowo.console_debug.label_prefix%'
+            $cspNonceAttribute: '%nowo.console_debug.csp_nonce_attribute%'
         tags:
             - { name: kernel.event_subscriber }
 

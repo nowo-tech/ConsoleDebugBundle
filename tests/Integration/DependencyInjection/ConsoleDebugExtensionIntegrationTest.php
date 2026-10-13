@@ -6,6 +6,7 @@ namespace Nowo\ConsoleDebugBundle\Tests\Integration\DependencyInjection;
 
 use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface;
 use Nowo\ConsoleDebugBundle\DependencyInjection\ConsoleDebugExtension;
+use Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugResponseSubscriber;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,6 +33,11 @@ final class ConsoleDebugExtensionIntegrationTest extends TestCase
         ]], $container);
 
         self::assertTrue($container->getParameter('nowo.console_debug.enabled'));
+        self::assertSame('csp_nonce', $container->getParameter('nowo.console_debug.csp_nonce_attribute'));
+        self::assertSame(
+            '%nowo.console_debug.csp_nonce_attribute%',
+            $container->getDefinition(ConsoleDebugResponseSubscriber::class)->getArgument('$cspNonceAttribute'),
+        );
         self::assertTrue($container->hasAlias(ConsoleDebugGateInterface::class));
         self::assertTrue($container->hasDefinition('nowo.console_debug'));
     }
