@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `csp_nonce_attribute` is validated at container compile time: only a string (attribute name) or `null` is accepted; other scalars (e.g. `true`) are rejected with a clear configuration error instead of being cast to a bogus attribute name.
+
 ## [1.2.0] - 2026-10-13
 
 ### Added

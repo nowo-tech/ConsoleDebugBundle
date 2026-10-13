@@ -33,4 +33,21 @@ final class ConfigurationTest extends TestCase
         $processor = new Processor();
         $processor->processConfiguration(new Configuration(), [['console_method' => 'trace']]);
     }
+
+    public function testCspNonceAttributeAcceptsNullToDisable(): void
+    {
+        $processor = new Processor();
+        $config    = $processor->processConfiguration(new Configuration(), [['csp_nonce_attribute' => null]]);
+
+        self::assertNull($config['csp_nonce_attribute']);
+    }
+
+    public function testNonStringCspNonceAttributeIsRejected(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('csp_nonce_attribute must be a string');
+
+        $processor = new Processor();
+        $processor->processConfiguration(new Configuration(), [['csp_nonce_attribute' => true]]);
+    }
 }

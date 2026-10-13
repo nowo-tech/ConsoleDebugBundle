@@ -7,6 +7,8 @@ namespace Nowo\ConsoleDebugBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+use function is_string;
+
 /**
  * Defines the configuration tree for nowo_console_debug.
  */
@@ -45,6 +47,10 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('csp_nonce_attribute')
                     ->info('Request attribute holding the CSP nonce stamped on the injected <script> tags (shared nowo-tech convention: csp_nonce). Null or empty disables it.')
                     ->defaultValue('csp_nonce')
+                    ->validate()
+                        ->ifTrue(static fn (mixed $v): bool => $v !== null && !is_string($v))
+                        ->thenInvalid('csp_nonce_attribute must be a string (request attribute name) or null.')
+                    ->end()
                 ->end()
                 ->booleanNode('shorten_paths')
                     ->info('When true, file paths are shortened relative to kernel.project_dir.')
