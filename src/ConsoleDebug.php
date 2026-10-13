@@ -49,18 +49,20 @@ final class ConsoleDebug
      */
     public function logAt(string $file, int $line, mixed ...$variables): void
     {
-        $this->record($file, $line, ...$variables);
-    }
-
-    /**
-     * @param mixed ...$variables Values to expose in the browser console
-     */
-    private function record(string $file, int $line, mixed ...$variables): void
-    {
         if (!$this->gate->isEnabled()) {
             return;
         }
 
+        $this->record($file, $line, ...$variables);
+    }
+
+    /**
+     * Stores an entry; callers have already checked the gate (evaluated once per call).
+     *
+     * @param mixed ...$variables Values to expose in the browser console
+     */
+    private function record(string $file, int $line, mixed ...$variables): void
+    {
         $label = null;
         if ($variables !== [] && is_string($variables[0])) {
             $label     = $variables[0];

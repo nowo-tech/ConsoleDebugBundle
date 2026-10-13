@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+use const INF;
+use const JSON_THROW_ON_ERROR;
+use const NAN;
+
 final class ConsoleDebugResponseSubscriberTest extends TestCase
 {
     public function testInjectsScriptIntoHtmlResponse(): void
@@ -161,5 +165,30 @@ final class ConsoleDebugResponseSubscriberTest extends TestCase
         self::assertStringContainsString('App/Demo/DemoPriority', $content);
         self::assertStringContainsString('console.group(', $content);
         self::assertStringNotContainsString('console.groupCollapsed(', $content);
+    }
+
+    public function testInjectsNonUtf8AndNonFiniteValuesWithoutThrowing(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $registry->add(new ConsoleDebugEntry(
+            file: 'src/Demo/Binary.php',
+            line: 3,
+            label: "bad \xB1 label",
+            variables: ["caf\xE9", INF, NAN, -INF, ['nested' => "\xFF"]],
+            timestamp: 1.0,
+        ));
+
+        $subscriber = new ConsoleDebugResponseSubscriber($registry, 'log', '[cdbg]');
+        $kernel     = $this->createMock(HttpKernelInterface::class);
+        $response   = new Response('<html><body></body></html>', 200, ['Content-Type' => 'text/html']);
+
+        $subscriber->onKernelResponse(new ResponseEvent($kernel, Request::create('/'), HttpKernelInterface::MAIN_REQUEST, $response));
+
+        $content = (string) $response->getContent();
+        self::assertSame(1, preg_match('/<script type="application\/json" data-nowo-console-debug-data>(.*?)<\/script>/s', $content, $m));
+        $decoded = json_decode($m[1] ?? '', true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame("bad \u{FFFD} label", $decoded[0]['label']);
+        self::assertSame(["caf\u{FFFD}", 0, 0, 0, ['nested' => "\u{FFFD}"]], $decoded[0]['variables']);
+        self::assertTrue($registry->isEmpty());
     }
 }

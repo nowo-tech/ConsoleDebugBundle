@@ -29,6 +29,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Dumping a value with invalid UTF-8 or `INF`/`NAN` no longer throws a `JsonException` from `kernel.response` (HTTP 500): invalid bytes are replaced with U+FFFD and non-finite floats with `0`.
+- The console debug gate is evaluated once per `cdbg()` call instead of twice.
+
+### Changed
+
+- `composer.json` declares `conflict: twig/twig <3.15` (the `{% cdbg %}` tag uses `Twig\Node\Nodes`, added in Twig 3.15); dev requirement bumped to `^3.15`.
+- CI matrix and docs aligned with the actual `^7.4 || ^8.0` Symfony requirement (Symfony 6.4 / 7.0 cells and "6+" badge removed; PHP floor documented as 8.2).
+
 ## [1.0.15] - 2026-10-09
 
 ### Fixed

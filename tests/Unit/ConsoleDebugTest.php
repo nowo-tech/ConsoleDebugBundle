@@ -7,6 +7,7 @@ namespace Nowo\ConsoleDebugBundle\Tests\Unit;
 use Nowo\ConsoleDebugBundle\ConsoleDebug;
 use Nowo\ConsoleDebugBundle\ConsoleDebugEntry;
 use Nowo\ConsoleDebugBundle\ConsoleDebugRegistry;
+use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface;
 use Nowo\ConsoleDebugBundle\Gate\EnabledConsoleDebugGate;
 use Nowo\ConsoleDebugBundle\Serializer\DebugValueNormalizer;
 use PHPUnit\Framework\TestCase;
@@ -195,5 +196,28 @@ final class ConsoleDebugTest extends TestCase
 
         $registry->reset();
         self::assertTrue($registry->isEmpty());
+    }
+
+    public function testGateIsEvaluatedOncePerCall(): void
+    {
+        $gate = new class implements ConsoleDebugGateInterface {
+            public int $calls = 0;
+
+            public function isEnabled(): bool
+            {
+                ++$this->calls;
+
+                return true;
+            }
+        };
+        $registry = new ConsoleDebugRegistry();
+        $service  = new ConsoleDebug($gate, $registry, new DebugValueNormalizer(), projectDir: null, shortenPaths: false);
+
+        $service->log('one');
+        self::assertSame(1, $gate->calls);
+
+        $service->logAt('file.php', 1, 'two');
+        self::assertSame(2, $gate->calls);
+        self::assertCount(2, $registry->all());
     }
 }

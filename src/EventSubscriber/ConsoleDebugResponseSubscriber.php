@@ -14,6 +14,8 @@ use const JSON_HEX_AMP;
 use const JSON_HEX_APOS;
 use const JSON_HEX_QUOT;
 use const JSON_HEX_TAG;
+use const JSON_INVALID_UTF8_SUBSTITUTE;
+use const JSON_PARTIAL_OUTPUT_ON_ERROR;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
@@ -73,10 +75,17 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Dumped values may hold invalid UTF-8 or INF/NAN: substitute them (U+FFFD / 0) instead of
+        // throwing, so an encoding error can never turn the page into a 500 from kernel.response.
         $payload = json_encode(
             array_map(static fn (ConsoleDebugEntry $entry): array => $entry->toArray(), $this->registry->all()),
-            JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+            JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
         );
+        if ($payload === false) {
+            // @codeCoverageIgnoreStart
+            return; // Safety net: skip injection rather than fail the response.
+            // @codeCoverageIgnoreEnd
+        }
 
         $method = $this->resolveConsoleMethod();
         $script = $this->buildScript($method, $payload);
