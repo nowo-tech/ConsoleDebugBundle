@@ -1,7 +1,17 @@
 # Upgrading
 
-
 ## Unreleased
+
+## To 1.1.0
+
+From **1.0.15** — never fail kernel.response on unencodable cdbg() values; Twig >=3.15 required.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
+
+- Apps on Twig < 3.15 are now blocked by Composer (`conflict: twig/twig <3.15`); `{% cdbg %}` already failed at runtime there.
+- Non-UTF-8 strings and INF/NAN in `cdbg()` are now injected (substituted) instead of turning the page into a 500.
 
 ## To 1.0.15
 
