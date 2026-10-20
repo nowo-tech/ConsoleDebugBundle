@@ -8,7 +8,7 @@
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
-This bundle is **FrankenPHP worker mode friendly**, including worker mode when the kernel is **not** reset between requests (registry cleared per main request/response). See [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
+This bundle is **FrankenPHP worker mode friendly**.
 
 ## Features
 
@@ -17,6 +17,7 @@ This bundle is **FrankenPHP worker mode friendly**, including worker mode when t
 - **Rich context** — Captures caller file, line, optional label, and normalized variable payloads.
 - **HTML injection** — Appends a JSON payload and runner script before `</body>` on HTML responses.
 - **Custom gate service** — Replace or extend authorization with route/query-param logic.
+- **FrankenPHP worker safe** — Also when the kernel is **not** reset between requests (registry cleared per main request/response); see the [worker audit](docs/FRANKENPHP-WORKER-AUDIT.md).
 
 ## Installation
 
@@ -119,7 +120,6 @@ make release-check
 
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
-- [PSR evaluation (REQ-CS-007)](docs/PSR.md)
 - [Usage](docs/USAGE.md)
 - [Contributing](docs/CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
@@ -133,6 +133,7 @@ make release-check
 
 ### Additional documentation
 
+- [PSR evaluation (REQ-CS-007)](docs/PSR.md)
 - [Performance](docs/PERFORMANCE.md)
 - [Demo (FrankenPHP)](docs/DEMO-FRANKENPHP.md)
 - [FrankenPHP worker audit (no kernel reset)](docs/FRANKENPHP-WORKER-AUDIT.md)

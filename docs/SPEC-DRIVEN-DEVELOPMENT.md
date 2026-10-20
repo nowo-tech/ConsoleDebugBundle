@@ -17,7 +17,7 @@ There is no separate executable spec language (for example Gherkin); Spec Kit sp
 - [Validating the functional spec](#validating-the-functional-spec)
 - [Requirement identifiers (`REQ-*`)](#requirement-identifiers-req-)
 - [Suggested workflow for contributors](#suggested-workflow-for-contributors)
-- [Relationship to Engram / external checklists](#relationship-to-engram-external-checklists)
+- [Relationship to Engram / external checklists](#relationship-to-engram--external-checklists)
 - [GitHub Spec Kit (summary)](#github-spec-kit-summary)
 - [See also](#see-also)
 
@@ -85,7 +85,6 @@ When you change scripted behavior, **update the existing `REQ-*` comment** if th
    - Follow the maintainer checklist in [`SPEC-KIT.md`](SPEC-KIT.md).
    - For **new features**, use Cursor Agent skills (`/speckit-specify`, `/speckit-plan`, `/speckit-tasks`) as documented in SPEC-KIT.
 
-
 ---
 
 ## Relationship to Engram / external checklists
@@ -93,8 +92,6 @@ When you change scripted behavior, **update the existing `REQ-*` comment** if th
 [`ENGRAM.md`](ENGRAM.md) covers Nowo-wide documentation checklist items. This document ties together **what the package does**, **how we verify it**, and **local `REQ-*` habits**. Both coexist: Engram for org-level compliance, this file for product + traceability expectations.
 
 ---
-
-
 
 ---
 

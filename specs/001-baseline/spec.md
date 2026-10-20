@@ -60,6 +60,23 @@ Console Debug Bundle provides **`cdbg()`**, a production-safe alternative to `dd
 - Injecting debug output into JSON/API responses.
 - Persisting debug history server-side.
 
+## Success criteria
+
+- **SC-001**: **24/24** production files mapped in [`code-inventory.md`](code-inventory.md): 23 under `src/` plus the root bundle class (audited 2026-10-20).
+- **SC-002**: Non-HTML responses are left unmodified (FR-06), proven by `ConsoleDebugResponseSubscriberTest`.
+- **SC-003**: Registry entries never leak across requests in FrankenPHP worker mode (FR-08, FR-09), proven by the reset and holder tests.
+- **SC-004**: PHPUnit, PHPStan (with the FrankenPHP rulesets) and PHP-CS-Fixer pass in CI.
+
+## Validation
+
+```bash
+composer test              # PHPUnit
+composer cs-check          # PHP-CS-Fixer (dry run)
+composer phpstan           # PHPStan
+make release-check         # full pre-release gate (Docker)
+git ls-files src | wc -l   # 23 (+ root bundle class) must match the inventory total (SC-001)
+```
+
 ## Traceability
 
 - FR-01 … FR-04: `tests/Unit/*`, demo `tests/Controller/DemoControllerTest.php`

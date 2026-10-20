@@ -2,9 +2,9 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/console-debug-bundle`  
-**Last audited**: 2026-07-24
+**Last audited**: 2026-10-20
 
-100% inventory of production PHP under `src/`. Every file maps to at least one FR-* in the baseline product spec.
+100% inventory of production files under `src/` (PHP and YAML) plus the bundle class `NowoConsoleDebugBundle.php`, which lives at the repository root (PSR-4 root). Every file maps to at least one FR-* in the baseline product spec.
 
 ## Bundle entry
 
@@ -73,3 +73,21 @@
 | --- | --- | --- |
 | `Resources/config/services.yaml` | Service definitions + aliases | FR-01 … FR-09 |
 | `Resources/config/packages/nowo_console_debug.yaml` | Default package config | FR-02 |
+| `Resources/config/twig.yaml` | Twig runtime + extension service tags (loaded when Twig is present) | FR-07 |
+
+## Coverage summary
+
+| Category | Files | Mapped |
+| --- | ---: | ---: |
+| Bundle entry | 1 | 1 |
+| Core helpers | 5 | 5 |
+| Contract | 1 | 1 |
+| Gates | 4 | 4 |
+| Serializer | 1 | 1 |
+| HTTP / events | 2 | 2 |
+| Twig | 5 | 5 |
+| Dependency injection | 2 | 2 |
+| Resources (non-PHP) | 3 | 3 |
+| **Total production sources** | **24** | **24** |
+
+Audit command (production count): `git ls-files src | wc -l` → **23**, plus the root `NowoConsoleDebugBundle.php` = **24** (2026-10-20).

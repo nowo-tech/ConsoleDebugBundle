@@ -9,6 +9,17 @@
 | **Verdict** | ✅ **Viable under scenario B** (after remediation) — `ConsoleDebugRegistry` is cleared at the start of every main request and after every main response, so entries can no longer reach another request, with or without `kernel.reset` |
 | Remediation (2026-09-23/24) | W-01/W-02 resolved: `ConsoleDebugHolderRequestSubscriber` clears the registry on main `kernel.request` (new optional `$registry` argument wired in `services.yaml`); `ConsoleDebugResponseSubscriber` clears it in `finally` for every main response. Tests: `tests/Unit/EventSubscriber/ConsoleDebugWorkerModeTest.php` + updated `ConsoleDebugResponseSubscriberTest` |
 
+## Table of contents
+
+- [Execution model assumed](#execution-model-assumed)
+- [Summary](#summary)
+- [Services reviewed](#services-reviewed)
+- [Findings](#findings)
+  - [W-01 — Debug entries survive to the next request and are injected into another user's HTML (High, scenario B only)](#w-01--debug-entries-survive-to-the-next-request-and-are-injected-into-another-users-html-high-scenario-b-only)
+  - [W-02 — Registry grows without bound on non-HTML traffic (Medium, scenario B only)](#w-02--registry-grows-without-bound-on-non-html-traffic-medium-scenario-b-only)
+- [Usage recommendations in worker mode](#usage-recommendations-in-worker-mode)
+- [Re-audit triggers](#re-audit-triggers)
+
 ## Execution model assumed
 
 FrankenPHP worker mode boots the Symfony kernel once per worker and serves many requests with the same container. This audit assumes the **strict** variant: the kernel is **not** rebooted between requests, so every shared service, static property and PHP global survives from one request to the next. Two scenarios are evaluated:
