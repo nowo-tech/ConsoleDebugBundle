@@ -34,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dependencies refreshed (Composer and pnpm/npm lock files of the bundle and its demos, campaign 2026-10-19).
 - `.php-cs-fixer.dist.php`: `new ParallelConfig(2)` (REQ-CS-001).
+- PHPDoc on every public method in `src/` (REQ-CS-001); Rector targets the PHP 8.2 floor (REQ-CS-003, REQ-SF-001).
+- `release-check` starts with `ensure-up` and runs the new `check-open-prs` (REQ-REL-003) and `check-no-raw-html-form` (REQ-TWIG-005) gates (REQ-MAKE-002); the co-author check accepts git worktrees.
+- Demo: the login form renders its `_csrf_token` through Symfony Form (`csrf_token_id: authenticate`) instead of a raw `<input>` (REQ-DEMO-001).
 - Documentation: wave-1 REQ compliance — README documentation list order and canonical FrankenPHP claim, canonical issue templates, CONTRIBUTING Cursor Agent settings (REQ-IDE-006), tables of contents (broken anchors fixed), Spec Kit baseline success criteria and validation commands, inventory 24/24 with coverage summary (`Resources/config/twig.yaml` mapped).
 
 ## [1.2.1] - 2026-10-13

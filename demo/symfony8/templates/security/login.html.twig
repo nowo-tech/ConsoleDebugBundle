@@ -22,7 +22,6 @@
                     {{ form_errors(loginForm._password) }}
                     <div class="form-text">Password toggle powered by PasswordToggleBundle.</div>
                 </div>
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                 <button type="submit" class="btn btn-primary w-100">Sign in</button>
             {{ form_end(loginForm) }}
 

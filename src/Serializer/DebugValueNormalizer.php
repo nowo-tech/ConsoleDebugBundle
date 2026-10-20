@@ -26,6 +26,7 @@ final class DebugValueNormalizer
 {
     private const MAX_DEPTH = 8;
 
+    /** Converts a value into JSON-safe data, bounded by a maximum nesting depth. */
     public function normalize(mixed $value, int $depth = 0): mixed
     {
         if ($depth >= self::MAX_DEPTH) {

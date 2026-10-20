@@ -13,6 +13,7 @@ use Twig\Extension\RuntimeExtensionInterface;
  */
 final class ConsoleDebugRuntime implements RuntimeExtensionInterface
 {
+    /** Runtime behind the cdbg() Twig function and {% cdbg %} tag. */
     public function __construct(
         private readonly ConsoleDebug $consoleDebug,
     ) {

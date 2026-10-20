@@ -9,5 +9,6 @@ namespace Nowo\ConsoleDebugBundle\Contract;
  */
 interface ConsoleDebugGateInterface
 {
+    /** Whether console debugging is allowed for the current request. */
     public function isEnabled(): bool;
 }

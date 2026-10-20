@@ -14,6 +14,7 @@ use Twig\TokenParser\AbstractTokenParser;
  */
 final class CdbgTokenParser extends AbstractTokenParser
 {
+    /** Parses {% cdbg %} and {% cdbg value, ... %}. */
     public function parse(Token $token): CdbgNode
     {
         $values = null;
@@ -39,6 +40,7 @@ final class CdbgTokenParser extends AbstractTokenParser
         return new Nodes($targets);
     }
 
+    /** Returns the tag name (cdbg). */
     public function getTag(): string
     {
         return 'cdbg';

@@ -16,6 +16,7 @@ final class Configuration implements ConfigurationInterface
 {
     public const ALIAS = 'nowo_console_debug';
 
+    /** Builds the nowo_console_debug configuration tree. */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder(self::ALIAS);

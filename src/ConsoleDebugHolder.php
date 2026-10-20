@@ -19,11 +19,13 @@ final class ConsoleDebugHolder
 {
     private const SERVER_KEY = '__NOWO_CONSOLE_DEBUG';
 
+    /** Stores the request-scoped ConsoleDebug service for the static cdbg() helpers. */
     public static function set(ConsoleDebug $consoleDebug): void
     {
         $_SERVER[self::SERVER_KEY] = $consoleDebug;
     }
 
+    /** Returns the stored ConsoleDebug service; throws when the bundle is not booted. */
     public static function get(): ConsoleDebug
     {
         $instance = $_SERVER[self::SERVER_KEY] ?? null;
@@ -34,6 +36,7 @@ final class ConsoleDebugHolder
         return $instance;
     }
 
+    /** Forgets the stored service (worker reset / tests). */
     public static function reset(): void
     {
         unset($_SERVER[self::SERVER_KEY]);

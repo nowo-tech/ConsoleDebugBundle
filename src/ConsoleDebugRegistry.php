@@ -18,6 +18,7 @@ final class ConsoleDebugRegistry implements ResetInterface
     /** @var list<ConsoleDebugEntry> */
     private array $entries = [];
 
+    /** Queues a debug entry for the current response. */
     public function add(ConsoleDebugEntry $entry): void
     {
         $this->entries[] = $entry;
@@ -31,16 +32,19 @@ final class ConsoleDebugRegistry implements ResetInterface
         return $this->entries;
     }
 
+    /** Whether no entry is queued. */
     public function isEmpty(): bool
     {
         return $this->entries === [];
     }
 
+    /** Drops every queued entry. */
     public function clear(): void
     {
         $this->entries = [];
     }
 
+    /** Clears the entries between requests (kernel.reset, FrankenPHP worker mode). */
     public function reset(): void
     {
         $this->clear();

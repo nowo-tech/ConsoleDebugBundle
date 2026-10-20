@@ -21,12 +21,14 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class ConsoleDebugHolderRequestSubscriber implements EventSubscriberInterface
 {
+    /** Publishes the ConsoleDebug service to the static holder on each main request. */
     public function __construct(
         private readonly ConsoleDebug $consoleDebug,
         private readonly ?ConsoleDebugRegistry $registry = null,
     ) {
     }
 
+    /** Clears stale entries and stores the service in the holder for the main request. */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
@@ -37,6 +39,7 @@ final class ConsoleDebugHolderRequestSubscriber implements EventSubscriberInterf
         ConsoleDebugHolder::set($this->consoleDebug);
     }
 
+    /** Subscribes early to kernel.request. */
     public static function getSubscribedEvents(): array
     {
         return [

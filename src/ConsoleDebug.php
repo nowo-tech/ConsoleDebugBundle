@@ -18,6 +18,7 @@ use const DEBUG_BACKTRACE_IGNORE_ARGS;
  */
 final class ConsoleDebug
 {
+    /** Collects debug values when the gate allows it, normalizing them for the browser console. */
     public function __construct(
         private readonly ConsoleDebugGateInterface $gate,
         private readonly ConsoleDebugRegistry $registry,

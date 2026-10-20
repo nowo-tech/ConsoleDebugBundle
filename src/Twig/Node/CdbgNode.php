@@ -17,6 +17,7 @@ use function sprintf;
 #[YieldReady]
 final class CdbgNode extends Node
 {
+    /** Node for {% cdbg %}, optionally holding the expressions to dump. */
     public function __construct(
         ?Node $values,
         int $lineno,
@@ -29,6 +30,7 @@ final class CdbgNode extends Node
         parent::__construct($nodes, [], $lineno);
     }
 
+    /** Compiles the tag into a call to ConsoleDebugRuntime::cdbg(). */
     public function compile(Compiler $compiler): void
     {
         $runtimeClass = ConsoleDebugRuntime::class;

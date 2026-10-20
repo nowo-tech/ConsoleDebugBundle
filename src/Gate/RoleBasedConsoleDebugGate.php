@@ -22,6 +22,7 @@ final class RoleBasedConsoleDebugGate implements ConsoleDebugGateInterface
     ) {
     }
 
+    /** Enabled when the inner gate is enabled and the current user has one of the configured roles. */
     public function isEnabled(): bool
     {
         if (!$this->innerGate->isEnabled()) {

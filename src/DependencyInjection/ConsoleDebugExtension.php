@@ -23,6 +23,7 @@ use function is_string;
  */
 final class ConsoleDebugExtension extends Extension
 {
+    /** Loads the services and exposes the processed configuration as container parameters. */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -88,6 +89,7 @@ final class ConsoleDebugExtension extends Extension
         $container->setAlias(ConsoleDebugGateInterface::class, $innerGateId);
     }
 
+    /** Returns the configuration alias. */
     public function getAlias(): string
     {
         return Configuration::ALIAS;

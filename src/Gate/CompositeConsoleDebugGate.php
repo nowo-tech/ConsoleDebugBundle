@@ -19,6 +19,7 @@ final class CompositeConsoleDebugGate implements ConsoleDebugGateInterface
     ) {
     }
 
+    /** Enabled only when every inner gate is enabled. */
     public function isEnabled(): bool
     {
         foreach ($this->gates as $gate) {

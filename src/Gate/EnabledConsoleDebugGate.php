@@ -11,11 +11,13 @@ use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface;
  */
 final class EnabledConsoleDebugGate implements ConsoleDebugGateInterface
 {
+    /** Gate driven by the `enabled` configuration flag. */
     public function __construct(
         private readonly bool $enabled,
     ) {
     }
 
+    /** Returns the configured flag. */
     public function isEnabled(): bool
     {
         return $this->enabled;

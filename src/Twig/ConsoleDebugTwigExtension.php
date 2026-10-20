@@ -13,6 +13,7 @@ use Twig\TwigFunction;
  */
 final class ConsoleDebugTwigExtension extends AbstractExtension
 {
+    /** Registers the cdbg() Twig function. */
     public function getFunctions(): array
     {
         return [
@@ -24,6 +25,7 @@ final class ConsoleDebugTwigExtension extends AbstractExtension
         ];
     }
 
+    /** Registers the {% cdbg %} Twig tag. */
     public function getTokenParsers(): array
     {
         return [new CdbgTokenParser()];

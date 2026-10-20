@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 final class QueryParamConsoleDebugGate implements ConsoleDebugGateInterface
 {
+    /** Gate that also requires a query parameter on the main request. */
     public function __construct(
         private readonly ConsoleDebugGateInterface $innerGate,
         private readonly RequestStack $requestStack,
@@ -22,6 +23,7 @@ final class QueryParamConsoleDebugGate implements ConsoleDebugGateInterface
     ) {
     }
 
+    /** Enabled when the inner gate is enabled and the main request carries the query parameter. */
     public function isEnabled(): bool
     {
         if (!$this->innerGate->isEnabled()) {

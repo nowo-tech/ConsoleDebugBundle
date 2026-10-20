@@ -37,7 +37,10 @@ final class LoginFormType extends AbstractType
         $resolver->setDefaults([
             'action'          => '/login',
             'method'          => 'POST',
-            'csrf_protection' => false,
+            // form_login (enable_csrf) reads `_csrf_token` for the `authenticate` id: let the form render it.
+            'csrf_protection' => true,
+            'csrf_field_name' => '_csrf_token',
+            'csrf_token_id'   => 'authenticate',
         ]);
     }
 

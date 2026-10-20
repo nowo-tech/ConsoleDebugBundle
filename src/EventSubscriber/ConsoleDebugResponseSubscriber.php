@@ -32,6 +32,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
     private const SCRIPT_MARKER = 'data-nowo-console-debug';
     private const DATA_MARKER   = 'data-nowo-console-debug-data';
 
+    /** Injects queued entries into HTML responses as console calls. */
     public function __construct(
         private readonly ConsoleDebugRegistry $registry,
         private readonly string $consoleMethod,
@@ -40,6 +41,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
     ) {
     }
 
+    /** Subscribes late to kernel.response. */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -47,6 +49,7 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /** Appends the console script to HTML main responses and always clears the queue. */
     public function onKernelResponse(ResponseEvent $event): void
     {
         if (!$event->isMainRequest() || $this->registry->isEmpty()) {
