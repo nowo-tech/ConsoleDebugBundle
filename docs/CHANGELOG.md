@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.2.2] - 2026-10-21](#122---2026-10-21)
 - [[1.2.1] - 2026-10-13](#121---2026-10-13)
 - [[1.2.0] - 2026-10-13](#120---2026-10-13)
 - [[1.1.0] - 2026-10-13](#110---2026-10-13)
@@ -30,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-10-21
+
+Dependency refresh, PHPDoc on public API, Rector PHP 8.2 floor, open-PR and raw-form release gates. See [UPGRADING](UPGRADING.md#to-122).
+
 ### Changed
 
 - Dependencies refreshed (Composer and pnpm/npm lock files of the bundle and its demos, campaign 2026-10-19).
@@ -38,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `release-check` starts with `ensure-up` and runs the new `check-open-prs` (REQ-REL-003) and `check-no-raw-html-form` (REQ-TWIG-005) gates (REQ-MAKE-002); the co-author check accepts git worktrees.
 - Demo: the login form renders its `_csrf_token` through Symfony Form (`csrf_token_id: authenticate`) instead of a raw `<input>` (REQ-DEMO-001).
 - Documentation: wave-1 REQ compliance — README documentation list order and canonical FrankenPHP claim, canonical issue templates, CONTRIBUTING Cursor Agent settings (REQ-IDE-006), tables of contents (broken anchors fixed), Spec Kit baseline success criteria and validation commands, inventory 24/24 with coverage summary (`Resources/config/twig.yaml` mapped).
+
+[1.2.2]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.2.2
 
 ## [1.2.1] - 2026-10-13
 
