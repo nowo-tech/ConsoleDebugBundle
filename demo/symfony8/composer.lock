@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a243d784418c2984f78989ab57464df",
+    "content-hash": "e9057fab0a2ed8521c451a87847f0ab0",
     "packages": [
         {
             "name": "nowo-tech/console-debug-bundle",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/console-debug-bundle",
-                "reference": "251552351d3b2937e129cc37251f758fb5f0b2a4"
+                "reference": "1a543254e2a77aa46d80e080704982dfef8f7c1a"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -142,20 +142,21 @@
         },
         {
             "name": "nowo-tech/password-toggle-bundle",
-            "version": "v2.4.1",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/PasswordToggleBundle.git",
-                "reference": "8048d9ff58d98ec255db4ed0834625fd012b431c"
+                "reference": "997ebdcb9362f0d3ee558ee88b59855332dc367a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/PasswordToggleBundle/zipball/8048d9ff58d98ec255db4ed0834625fd012b431c",
-                "reference": "8048d9ff58d98ec255db4ed0834625fd012b431c",
+                "url": "https://api.github.com/repos/nowo-tech/PasswordToggleBundle/zipball/997ebdcb9362f0d3ee558ee88b59855332dc367a",
+                "reference": "997ebdcb9362f0d3ee558ee88b59855332dc367a",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2 <8.6",
+                "psr/log": "^1.1 || ^2.0 || ^3.0",
                 "symfony/form": "^7.4 || ^8.0",
                 "symfony/framework-bundle": "^7.4 || ^8.0",
                 "symfony/twig-bundle": "^7.4 || ^8.0",
@@ -170,7 +171,6 @@
                 "phpstan/phpstan-phpunit": "^2.0",
                 "phpstan/phpstan-symfony": "^2.0",
                 "phpunit/phpunit": "^10.0",
-                "psr/log": "^3.0",
                 "rector/rector": "^2.0",
                 "symfony/asset": "^7.4 || ^8.0",
                 "symfony/console": "^7.4 || ^8.0",
@@ -221,6 +221,7 @@
                 "visibility"
             ],
             "support": {
+                "docs": "https://github.com/nowo-tech/PasswordToggleBundle/tree/main/docs",
                 "issues": "https://github.com/nowo-tech/PasswordToggleBundle/issues",
                 "source": "https://github.com/nowo-tech/PasswordToggleBundle"
             },
@@ -230,7 +231,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-13T12:06:37+00:00"
+            "time": "2026-10-22T06:00:18+00:00"
         },
         {
             "name": "pentatrion/vite-bundle",
@@ -4981,16 +4982,16 @@
         },
         {
             "name": "nowo-tech/hot-reload-bundle",
-            "version": "v1.6.1",
+            "version": "v1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/HotReloadBundle.git",
-                "reference": "6d3117328bd9d7f55a70743567d04ee25d6bc366"
+                "reference": "cf84e69a6f93f95f06876638337f9f792b2bcb0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/HotReloadBundle/zipball/6d3117328bd9d7f55a70743567d04ee25d6bc366",
-                "reference": "6d3117328bd9d7f55a70743567d04ee25d6bc366",
+                "url": "https://api.github.com/repos/nowo-tech/HotReloadBundle/zipball/cf84e69a6f93f95f06876638337f9f792b2bcb0a",
+                "reference": "cf84e69a6f93f95f06876638337f9f792b2bcb0a",
                 "shasum": ""
             },
             "require": {
@@ -5068,7 +5069,7 @@
                 "issues": "https://github.com/nowo-tech/HotReloadBundle/issues",
                 "source": "https://github.com/nowo-tech/HotReloadBundle"
             },
-            "time": "2026-10-13T10:57:34+00:00"
+            "time": "2026-10-21T05:26:17+00:00"
         },
         {
             "name": "nowo-tech/twig-inspector-bundle",
@@ -6321,28 +6322,28 @@
         },
         {
             "name": "sebastian/git-state",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/git-state.git",
-                "reference": "792a952e0eba55b6960a48aeceb9f371aad1f76b"
+                "reference": "31a565f463686f0eefa85f899549256bf5805985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git-state/zipball/792a952e0eba55b6960a48aeceb9f371aad1f76b",
-                "reference": "792a952e0eba55b6960a48aeceb9f371aad1f76b",
+                "url": "https://api.github.com/repos/sebastianbergmann/git-state/zipball/31a565f463686f0eefa85f899549256bf5805985",
+                "reference": "31a565f463686f0eefa85f899549256bf5805985",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.4.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.0-dev"
+                    "dev-main": "1.1-dev"
                 }
             },
             "autoload": {
@@ -6366,7 +6367,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/git-state/issues",
                 "security": "https://github.com/sebastianbergmann/git-state/security/policy",
-                "source": "https://github.com/sebastianbergmann/git-state/tree/1.0.0"
+                "source": "https://github.com/sebastianbergmann/git-state/tree/1.1.0"
             },
             "funding": [
                 {
@@ -6386,7 +6387,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-21T12:54:28+00:00"
+            "time": "2026-10-21T05:59:52+00:00"
         },
         {
             "name": "sebastian/global-state",
