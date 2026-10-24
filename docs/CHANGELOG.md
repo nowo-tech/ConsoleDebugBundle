@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Demo (REQ-TWIG-003):** `security/login.html.twig` renders the login form through the child loop (`form_row(child)`) instead of `form_label`/`form_widget`/`form_errors` per field; the password hint moved to the `LoginFormType` `help` option.
+
 ## [1.2.2] - 2026-10-21
 
 Dependency refresh, PHPDoc on public API, Rector PHP 8.2 floor, open-PR and raw-form release gates. See [UPGRADING](UPGRADING.md#to-122).

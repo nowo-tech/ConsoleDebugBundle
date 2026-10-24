@@ -25,6 +25,7 @@ final class LoginFormType extends AbstractType
             ])
             ->add('_password', TogglePasswordType::class, [
                 'label' => 'Password',
+                'help'  => 'Password toggle powered by PasswordToggleBundle.',
                 'attr'  => [
                     'autocomplete' => 'current-password',
                     'class'        => 'form-control',
