@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **Pages with injected debug data are `private, no-store`.** The subscriber injected the dumped values into the HTML
+  without touching the cache headers; with stateless (token) authentication and a `public` / `s-maxage` page, a shared
+  cache could store a page holding another user's dumped values.
+
 ### Changed
 
 - **Demo (REQ-TWIG-003):** `security/login.html.twig` renders the login form through the child loop (`form_row(child)`) instead of `form_label`/`form_widget`/`form_errors` per field; the password hint moved to the `LoginFormType` `help` option.

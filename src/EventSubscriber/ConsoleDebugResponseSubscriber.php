@@ -105,6 +105,10 @@ final class ConsoleDebugResponseSubscriber implements EventSubscriberInterface
         }
 
         $response->setContent($content);
+        // The page now carries this request's dumped values: never let a shared cache (CDN, Varnish, HttpCache) or the
+        // browser cache store it — with stateless (token) auth Symfony would not make the response private by itself.
+        $response->setPrivate();
+        $response->headers->addCacheControlDirective('no-store');
     }
 
     private function isHtmlResponse(string $contentType): bool

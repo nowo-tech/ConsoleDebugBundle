@@ -43,6 +43,23 @@ final class ConsoleDebugResponseSubscriberTest extends TestCase
         self::assertTrue($registry->isEmpty());
     }
 
+    public function testInjectedResponseIsNeverStoredByASharedCache(): void
+    {
+        $registry = new ConsoleDebugRegistry();
+        $registry->add(new ConsoleDebugEntry('file.php', 1, null, ['secret'], 1.0));
+        $response = new Response('<html><body></body></html>', 200, ['Content-Type' => 'text/html']);
+        $response->setPublic();
+        $response->setSharedMaxAge(600);
+
+        (new ConsoleDebugResponseSubscriber($registry, 'info', '[cdbg]'))->onKernelResponse(
+            new ResponseEvent($this->createMock(HttpKernelInterface::class), Request::create('/'), HttpKernelInterface::MAIN_REQUEST, $response),
+        );
+
+        self::assertTrue($response->headers->hasCacheControlDirective('private'));
+        self::assertTrue($response->headers->hasCacheControlDirective('no-store'));
+        self::assertFalse($response->headers->hasCacheControlDirective('public'));
+    }
+
     public function testSkipsNonHtmlResponses(): void
     {
         $registry = new ConsoleDebugRegistry();
