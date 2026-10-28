@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.2.3] - 2026-10-28](#123---2026-10-28)
 - [[1.2.2] - 2026-10-21](#122---2026-10-21)
 - [[1.2.1] - 2026-10-13](#121---2026-10-13)
 - [[1.2.0] - 2026-10-13](#120---2026-10-13)
@@ -31,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-10-28
+
+Security: pages with injected debug data are sent private, no-store. See [UPGRADING](UPGRADING.md#to-123).
+
 ### Security
 
 - **Pages with injected debug data are `private, no-store`.** The subscriber injected the dumped values into the HTML
@@ -40,6 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Demo (REQ-TWIG-003):** `security/login.html.twig` renders the login form through the child loop (`form_row(child)`) instead of `form_label`/`form_widget`/`form_errors` per field; the password hint moved to the `LoginFormType` `help` option.
+
+[1.2.3]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.2.3
 
 ## [1.2.2] - 2026-10-21
 
