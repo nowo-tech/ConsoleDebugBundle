@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- USAGE: new section "Using it from a DDD / hexagonal application" (keep `cdbg()` out of Domain, inject the service in Infrastructure, replace or decorate `ConsoleDebugGateInterface`, known limitations).
+
 ## [1.2.3] - 2026-10-28
 
 Security: pages with injected debug data are sent private, no-store. See [UPGRADING](UPGRADING.md#to-123).
