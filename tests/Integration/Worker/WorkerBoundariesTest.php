@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Symfony\Component\Messenger\EventListener\ResetServicesListener;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
@@ -219,10 +219,10 @@ final class WorkerBoundariesTest extends WebTestCase
         return $consoleDebug;
     }
 
-    private function dispatcher(): EventDispatcher
+    private function dispatcher(): EventDispatcherInterface
     {
         $dispatcher = self::getContainer()->get('event_dispatcher');
-        self::assertInstanceOf(EventDispatcher::class, $dispatcher);
+        self::assertInstanceOf(EventDispatcherInterface::class, $dispatcher);
 
         return $dispatcher;
     }
