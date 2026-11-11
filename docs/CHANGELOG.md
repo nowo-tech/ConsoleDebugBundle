@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.2.4] - 2026-11-11](#124---2026-11-11)
 - [[1.2.3] - 2026-10-28](#123---2026-10-28)
 - [[1.2.2] - 2026-10-21](#122---2026-10-21)
 - [[1.2.1] - 2026-10-13](#121---2026-10-13)
@@ -31,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2026-07-09](#100---2026-07-09)
 
 ## [Unreleased]
+
+## [1.2.4] - 2026-11-11
 
 Next patch: 1.2.4.
 
@@ -73,6 +76,8 @@ Next patch: 1.2.4.
 - `docs/FRANKENPHP-WORKER-AUDIT.md`: Messenger and console boundaries (W-03), the worker test, the precise
   precondition and the host rule for Doctrine entity managers.
 - USAGE: new section "Using it from a DDD / hexagonal application" (keep `cdbg()` out of Domain, inject the service in Infrastructure, replace or decorate `ConsoleDebugGateInterface`, known limitations).
+
+[1.2.4]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.2.4
 
 ## [1.2.3] - 2026-10-28
 
