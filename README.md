@@ -17,7 +17,7 @@ This bundle is **FrankenPHP worker mode friendly**.
 - **Rich context** — Captures caller file, line, optional label, and normalized variable payloads.
 - **HTML injection** — Appends a JSON payload and runner script before `</body>` on HTML responses.
 - **Custom gate service** — Replace or extend authorization with route/query-param logic.
-- **FrankenPHP worker safe** — Also when the kernel is **not** reset between requests (registry cleared per main request/response); see the [worker audit](docs/FRANKENPHP-WORKER-AUDIT.md).
+- **FrankenPHP worker safe** — Also when the kernel is **not** reset between requests and the services resetter does not run (registry cleared per main request/response, Messenger message and console command); see the [worker audit](docs/FRANKENPHP-WORKER-AUDIT.md).
 
 ## Installation
 
