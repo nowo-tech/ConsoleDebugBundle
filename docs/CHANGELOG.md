@@ -32,6 +32,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Next patch: 1.2.4.
+
+### Fixed
+
+- **Debug entries kept between Messenger messages and console runs (REQ-RUNTIME-002).** `ConsoleDebugRegistry` was
+  emptied at the start of each main request and after each main response with entries; in Messenger consumers and
+  console commands only `kernel.reset` emptied it. Where the services resetter does not run between units of work (a
+  host that removes, replaces or bypasses `services_resetter` or drives `http_kernel` directly, a consumer started
+  with `messenger:consume --no-reset`, or a long-running process that runs several console commands) and the gate is
+  open there (custom `gate_service`, or the role gate with an impersonated token), `cdbg()` entries of one message or
+  command stayed in memory for the next ones and grew for the life of the process. They were never sent to a browser
+  from those paths. New `ConsoleDebugBoundaryClearSubscriber` empties the registry at `kernel.terminate`,
+  `WorkerMessageReceivedEvent`, `WorkerMessageHandledEvent`, `WorkerMessageFailedEvent` and `console.terminate`
+  (Messenger and console events subscribed by name; both components stay optional). `console.terminate` clears only
+  when the outermost command ends and no Messenger message is in flight, so a command run in-process from another
+  command or from a handler (`Application::doRun()`) keeps the outer unit's entries (audit MI-C-I3). The registry is
+  injected as an iterator of `IGNORE_ON_UNINITIALIZED_REFERENCE` references, so a boundary never builds it.
+  `ResetInterface` / `kernel.reset` are kept. Affected: 1.0.0 to 1.2.3, on those paths. Since 1.0.4 the registry is
+  resettable, so the stock `messenger:consume` (without `--no-reset`) already emptied it per message; in 1.0.0–1.0.3
+  stock FrankenPHP workers injected one request's entries into the next user's HTML page (fixed in 1.0.4).
+
+### Tests
+
+- `tests/Integration/Worker/WorkerBoundariesTest.php`: one booted kernel with `services_resetter` replaced by a
+  no-op; 500 requests through a `KernelBrowser` with `disableReboot()` (user A records a private entry on JSON and
+  HTML pages, user B's HTML pages must never show it), 500 messages through a real Messenger `Worker` without
+  `ResetServicesListener` (every 7th fails) and 500 console `Application` runs, alternating two users; memory grows
+  less than 1 MiB after a 50-unit warm-up. Direct `clearRegistry()` test.
+- `symfony/browser-kit`, `symfony/console` and `symfony/messenger` added to `require-dev` (tests only).
+- `rector.php`: `EventSubscriberToAttributeRector` skipped for `src/EventSubscriber` (subscribers wired explicitly, optional events subscribed by name).
 
 ### Changed
 
@@ -40,6 +70,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- `docs/FRANKENPHP-WORKER-AUDIT.md`: Messenger and console boundaries (W-03), the worker test, the precise
+  precondition and the host rule for Doctrine entity managers.
 - USAGE: new section "Using it from a DDD / hexagonal application" (keep `cdbg()` out of Domain, inject the service in Infrastructure, replace or decorate `ConsoleDebugGateInterface`, known limitations).
 
 ## [1.2.3] - 2026-10-28

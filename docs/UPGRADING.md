@@ -26,6 +26,12 @@
 
 ## Unreleased
 
+Next patch: 1.2.4. No configuration change.
+
+- `cdbg()` entries recorded in a Messenger handler or a console command are now dropped when the message is received,
+  handled or failed and when the command terminates (also at `kernel.terminate`). They were never shown from those
+  paths; only memory changes.
+
 ## To 1.2.3
 
 From **1.2.2**:

@@ -50,4 +50,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    # Messenger, console and kernel.terminate boundaries. '@!' = IGNORE_ON_UNINITIALIZED_REFERENCE: a boundary only
+    # clears a registry the unit of work already built and never builds one.
+    Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugBoundaryClearSubscriber:
+        arguments:
+            $registries: !iterator ['@!nowo.console_debug.registry']
+        tags:
+            - { name: kernel.event_subscriber }
+
     Nowo\ConsoleDebugBundle\Serializer\DebugValueNormalizer: ~

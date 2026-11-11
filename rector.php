@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Symfony\CodeQuality\Rector\Class_\EventSubscriberToAttributeRector;
 use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
@@ -20,4 +21,9 @@ return RectorConfig::configure()
     ->withSkip([
         __DIR__ . '/demo',
         __DIR__ . '/vendor',
+        // The subscribers are wired explicitly in services.yaml (kernel.event_subscriber tag) and some subscribe to
+        // optional Messenger / console events by name: they stay EventSubscriberInterface classes.
+        EventSubscriberToAttributeRector::class => [
+            __DIR__ . '/src/EventSubscriber',
+        ],
     ]);
