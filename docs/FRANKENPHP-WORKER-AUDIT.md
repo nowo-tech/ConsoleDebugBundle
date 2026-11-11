@@ -111,10 +111,10 @@ No other findings. `ConsoleDebugHolder` stores the service in `$_SERVER['__NOWO_
 | HTTP main response | `kernel.response` (main only, entries present) | -4096 | `ConsoleDebugResponseSubscriber` (injects, then clears in `finally`) |
 | HTTP end | `kernel.terminate` | -4096 | `ConsoleDebugBoundaryClearSubscriber` |
 | Messenger message start / end | `Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent` / `WorkerMessageHandledEvent`, `WorkerMessageFailedEvent` (by name) | 4096 / -4096 | `ConsoleDebugBoundaryClearSubscriber` |
-| Console command end | `console.terminate` (by name) | -4096 | `ConsoleDebugBoundaryClearSubscriber` |
+| Console command end | `console.terminate` (by name; `console.command` counts the depth) | -4096 | `ConsoleDebugBoundaryClearSubscriber`, only when the outermost command ends and no Messenger message is in flight (`WorkerStoppedEvent` clears the in-flight flag) |
 | Services resetter (when the host runs it) | `kernel.reset` | — | registry `reset()` (kept, not relied on) |
 
-One console command or one Messenger message is one unit of work: entries recorded inside a long loop of one command are held until the command terminates.
+A command run in-process from another command or from a message handler (`Application::doRun()`) keeps the outer unit's entries (audit MI-C-I3; test `WorkerBoundariesTest::testNestedCommandsKeepTheOuterUnitsEntries`). One console command or one Messenger message is one unit of work: entries recorded inside a long loop of one command are held until the command terminates.
 
 ## Worker test
 

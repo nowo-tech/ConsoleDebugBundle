@@ -170,6 +170,64 @@ final class WorkerBoundariesTest extends WebTestCase
     }
 
     /**
+     * MI-C-I3: a command run in-process from another command or from a Messenger handler (Application::doRun())
+     * keeps the outer unit's entries; the outermost console.terminate and the message boundaries still clear them.
+     */
+    public function testNestedCommandsKeepTheOuterUnitsEntries(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $registry     = $this->registry();
+        $consoleDebug = $this->consoleDebug();
+        $dispatcher   = $this->dispatcher();
+        $application  = new Application('worker-test');
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+        $application->setDispatcher($dispatcher);
+
+        $counts = [];
+        $inner  = (new Command('app:inner'))->setCode(static fn (): int => Command::SUCCESS);
+        $outer  = (new Command('app:outer'))->setCode(static function (InputInterface $input, OutputInterface $output) use ($application, $registry, $consoleDebug, &$counts): int {
+            $consoleDebug->log('outer-entry');
+            $application->doRun(new ArrayInput(['command' => 'app:inner']), $output);
+            $counts[] = count($registry->all());
+
+            return Command::SUCCESS;
+        });
+        $application->setCommandLoader(new FactoryCommandLoader([
+            'app:outer' => static fn (): Command => $outer,
+            'app:inner' => static fn (): Command => $inner,
+        ]));
+
+        self::assertSame(Command::SUCCESS, $application->run(new ArrayInput(['command' => 'app:outer']), new NullOutput()));
+        self::assertSame([1], $counts, 'A nested command dropped the outer command\'s entries.');
+        self::assertTrue($registry->isEmpty(), 'The outermost console.terminate clears the registry.');
+
+        $bus = new MessageBus([new HandleMessageMiddleware(new HandlersLocator([
+            TenantDebugMessage::class => [static function () use ($application, $registry, $consoleDebug, &$counts): void {
+                $consoleDebug->log('handler-entry');
+                $application->doRun(new ArrayInput(['command' => 'app:inner']), new NullOutput());
+                $counts[] = count($registry->all());
+            }],
+        ]))]);
+        $worker     = new Worker(['async' => new TenantDebugReceiver(3)], $bus, $dispatcher);
+        $stopOnIdle = static function (WorkerRunningEvent $event): void {
+            if ($event->isWorkerIdle()) {
+                $event->getWorker()->stop();
+            }
+        };
+        $dispatcher->addListener(WorkerRunningEvent::class, $stopOnIdle);
+
+        try {
+            $worker->run(['sleep' => 0]);
+        } finally {
+            $dispatcher->removeListener(WorkerRunningEvent::class, $stopOnIdle);
+        }
+
+        self::assertSame([1, 1, 1, 1], $counts, 'A command run from the handler dropped its entries.');
+        self::assertTrue($registry->isEmpty(), 'The message boundaries clear the registry.');
+    }
+
+    /**
      * One non-HTTP unit of work: the registry must be empty; user A then records a private entry.
      */
     private function unitOfWork(ConsoleDebugRegistry $registry, ConsoleDebug $consoleDebug, string $user, int $index): void

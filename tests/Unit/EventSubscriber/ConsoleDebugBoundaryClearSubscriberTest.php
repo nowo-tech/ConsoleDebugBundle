@@ -17,10 +17,12 @@ final class ConsoleDebugBoundaryClearSubscriberTest extends TestCase
         self::assertSame(
             [
                 KernelEvents::TERMINATE                                            => ['clearRegistry', -4096],
-                'Symfony\\Component\\Messenger\\Event\\WorkerMessageReceivedEvent' => ['clearRegistry', 4096],
-                'Symfony\\Component\\Messenger\\Event\\WorkerMessageHandledEvent'  => ['clearRegistry', -4096],
-                'Symfony\\Component\\Messenger\\Event\\WorkerMessageFailedEvent'   => ['clearRegistry', -4096],
-                'console.terminate'                                                => ['clearRegistry', -4096],
+                'Symfony\\Component\\Messenger\\Event\\WorkerMessageReceivedEvent' => ['onMessageReceived', 4096],
+                'Symfony\\Component\\Messenger\\Event\\WorkerMessageHandledEvent'  => ['onMessageFinished', -4096],
+                'Symfony\\Component\\Messenger\\Event\\WorkerMessageFailedEvent'   => ['onMessageFinished', -4096],
+                'Symfony\\Component\\Messenger\\Event\\WorkerStoppedEvent'         => ['onWorkerStopped', -4096],
+                'console.command'                                                  => ['onConsoleCommand', 4096],
+                'console.terminate'                                                => ['onConsoleTerminate', -4096],
             ],
             ConsoleDebugBoundaryClearSubscriber::getSubscribedEvents(),
         );

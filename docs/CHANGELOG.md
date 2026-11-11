@@ -45,10 +45,13 @@ Next patch: 1.2.4.
   command stayed in memory for the next ones and grew for the life of the process. They were never sent to a browser
   from those paths. New `ConsoleDebugBoundaryClearSubscriber` empties the registry at `kernel.terminate`,
   `WorkerMessageReceivedEvent`, `WorkerMessageHandledEvent`, `WorkerMessageFailedEvent` and `console.terminate`
-  (Messenger and console events subscribed by name; both components stay optional). The registry is injected as an
-  iterator of `IGNORE_ON_UNINITIALIZED_REFERENCE` references, so a boundary never builds it. `ResetInterface` /
-  `kernel.reset` are kept. Affected: 1.0.0 to 1.2.3, only on those paths; the stock `messenger:consume` (without
-  `--no-reset`) already reset the registry per message.
+  (Messenger and console events subscribed by name; both components stay optional). `console.terminate` clears only
+  when the outermost command ends and no Messenger message is in flight, so a command run in-process from another
+  command or from a handler (`Application::doRun()`) keeps the outer unit's entries (audit MI-C-I3). The registry is
+  injected as an iterator of `IGNORE_ON_UNINITIALIZED_REFERENCE` references, so a boundary never builds it.
+  `ResetInterface` / `kernel.reset` are kept. Affected: 1.0.0 to 1.2.3, on those paths. Since 1.0.4 the registry is
+  resettable, so the stock `messenger:consume` (without `--no-reset`) already emptied it per message; in 1.0.0–1.0.3
+  stock FrankenPHP workers injected one request's entries into the next user's HTML page (fixed in 1.0.4).
 
 ### Tests
 
