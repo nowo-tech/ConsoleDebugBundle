@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Changed
+
+- FrankenPHP worker audit (igor): `ConsoleDebugRegistry::reset()` empties the entries directly and the `$_SERVER` bridge of `ConsoleDebugHolder` is annotated; both igor warnings were false positives (no behaviour change). See `docs/FRANKENPHP-WORKER-AUDIT.md`.
+- CI: new standalone `igor` job runs `composer igor` (REQ-CS-008).
+
 ### Documentation
 
 - USAGE: new section "Using it from a DDD / hexagonal application" (keep `cdbg()` out of Domain, inject the service in Infrastructure, replace or decorate `ConsoleDebugGateInterface`, known limitations).

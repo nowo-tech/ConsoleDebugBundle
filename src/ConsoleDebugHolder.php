@@ -22,12 +22,14 @@ final class ConsoleDebugHolder
     /** Stores the request-scoped ConsoleDebug service for the static cdbg() helpers. */
     public static function set(ConsoleDebug $consoleDebug): void
     {
+        // @igor-ignore - Holds the shared ConsoleDebug service (no request data); FrankenPHP resets $_SERVER per request and kernel.request re-binds it.
         $_SERVER[self::SERVER_KEY] = $consoleDebug;
     }
 
     /** Returns the stored ConsoleDebug service; throws when the bundle is not booted. */
     public static function get(): ConsoleDebug
     {
+        // @igor-ignore - Holds the shared ConsoleDebug service (no request data); FrankenPHP resets $_SERVER per request and kernel.request re-binds it.
         $instance = $_SERVER[self::SERVER_KEY] ?? null;
         if (!$instance instanceof ConsoleDebug) {
             throw new LogicException('ConsoleDebugBundle is not booted or the nowo.console_debug service is unavailable.');
@@ -39,6 +41,7 @@ final class ConsoleDebugHolder
     /** Forgets the stored service (worker reset / tests). */
     public static function reset(): void
     {
+        // @igor-ignore - Holds the shared ConsoleDebug service (no request data); FrankenPHP resets $_SERVER per request and kernel.request re-binds it.
         unset($_SERVER[self::SERVER_KEY]);
     }
 }

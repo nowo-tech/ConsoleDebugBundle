@@ -18,6 +18,7 @@
   - [W-01 — Debug entries survive to the next request and are injected into another user's HTML (High, scenario B only)](#w-01--debug-entries-survive-to-the-next-request-and-are-injected-into-another-users-html-high-scenario-b-only)
   - [W-02 — Registry grows without bound on non-HTML traffic (Medium, scenario B only)](#w-02--registry-grows-without-bound-on-non-html-traffic-medium-scenario-b-only)
 - [Usage recommendations in worker mode](#usage-recommendations-in-worker-mode)
+- [Igor findings triage (2026-11-11)](#igor-findings-triage-2026-11-11)
 - [Re-audit triggers](#re-audit-triggers)
 
 ## Execution model assumed
@@ -87,6 +88,16 @@ No other findings. `ConsoleDebugHolder` stores the service in `$_SERVER['__NOWO_
 - `cdbg()` calls in API/JSON controllers are discarded at the end of the response (they are never shown); remove them from hot paths and long-running loops.
 - Custom `gate_service` implementations must stay stateless (read the request/user at call time, do not cache the decision in a property).
 - A custom Twig or event listener that calls `cdbg()` after `kernel.response` priority `-4096` produces entries that are never shown; they are removed at the next main request.
+
+## Igor findings triage (2026-11-11)
+
+`composer igor` (igor-php 0.10.1) reported 2 warnings on `main`; both are false positives, no code path changes
+behaviour. Igor now runs in CI (`igor` job) and reports 0 KO / 0 WARN.
+
+| Finding | Verdict | Resolution |
+|---------|---------|------------|
+| `ConsoleDebugHolder` reads / writes / unsets `$_SERVER['__NOWO_CONSOLE_DEBUG']` | False positive | The key holds the shared `ConsoleDebug` service (no request data); FrankenPHP resets `$_SERVER` per request and the main `kernel.request` re-binds it. Annotated `@igor-ignore`. |
+| `ConsoleDebugRegistry::$entries` "mutated but not reset in reset()" | False positive | `reset()` already emptied it through `clear()`; igor does not follow the call. `reset()` now assigns `$this->entries = []` directly. |
 
 ## Re-audit triggers
 

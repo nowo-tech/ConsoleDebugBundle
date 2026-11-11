@@ -47,6 +47,6 @@ final class ConsoleDebugRegistry implements ResetInterface
     /** Clears the entries between requests (kernel.reset, FrankenPHP worker mode). */
     public function reset(): void
     {
-        $this->clear();
+        $this->entries = [];
     }
 }
