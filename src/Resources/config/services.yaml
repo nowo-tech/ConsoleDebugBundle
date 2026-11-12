@@ -52,7 +52,9 @@ services:
 
     # Messenger, console and kernel.terminate boundaries. '@!' = IGNORE_ON_UNINITIALIZED_REFERENCE: a boundary only
     # clears a registry the unit of work already built and never builds one.
+    # autoconfigure off: it implements ResetInterface, but its console bookkeeping must survive kernel.reset (1.2.5).
     Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugBoundaryClearSubscriber:
+        autoconfigure: false
         arguments:
             $registries: !iterator ['@!nowo.console_debug.registry']
         tags:

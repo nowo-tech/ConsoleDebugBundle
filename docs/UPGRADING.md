@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 1.2.5](#to-125)
 - [To 1.2.4](#to-124)
 - [To 1.2.3](#to-123)
 - [To 1.2.2](#to-122)
@@ -26,6 +27,19 @@
 - [1.0.0](#100)
 
 ## Unreleased
+
+## To 1.2.5
+
+From **1.2.4**: patch, no configuration change.
+
+```bash
+composer update nowo-tech/console-debug-bundle
+```
+
+- The outermost console command now always empties the debug registry when it ends, even when another console
+  listener throws or stops propagation; a nested command never empties the outer command's entries.
+  `ConsoleDebugBoundaryClearSubscriber` is not autoconfigured any more (it is wired explicitly; its console methods now
+  take the console event).
 
 ## To 1.2.4
 

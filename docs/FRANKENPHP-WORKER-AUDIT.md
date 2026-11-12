@@ -3,12 +3,13 @@
 | Field | Value |
 |-------|-------|
 | Package | `nowo-tech/console-debug-bundle` (`symfony-bundle`) |
-| Audited revision | `v1.0.13` (post-remediation); boundaries re-audited for 1.2.4 (REQ-RUNTIME-002, 2026-11-11) |
+| Audited revision | `v1.0.13` (post-remediation); boundaries re-audited for 1.2.4 (REQ-RUNTIME-002, 2026-11-11) and 1.2.5 (console bookkeeping, audit NM, 2026-11-12) |
 | Audit date | 2026-09-23 (remediation verified 2026-09-24) |
 | Method | Manual review of every file under `src/` (services, gates, subscribers, Twig runtime/extension/node/parser, normalizer, DI extension, `Resources/config/*.yaml`, global `cdbg()` helper) |
 | **Verdict** | ✅ **Viable under scenario B** (after remediation) — `ConsoleDebugRegistry` is cleared at the start of every main request, after every main response, at `kernel.terminate`, at every Messenger message boundary and at `console.terminate`, so entries can no longer reach another unit of work, with or without `kernel.reset` |
 | Remediation (2026-09-23/24) | W-01/W-02 resolved: `ConsoleDebugHolderRequestSubscriber` clears the registry on main `kernel.request` (new optional `$registry` argument wired in `services.yaml`); `ConsoleDebugResponseSubscriber` clears it in `finally` for every main response. Tests: `tests/Unit/EventSubscriber/ConsoleDebugWorkerModeTest.php` + updated `ConsoleDebugResponseSubscriberTest` |
 | Remediation (2026-11-11, 1.2.4) | W-03 resolved: new `ConsoleDebugBoundaryClearSubscriber` (Messenger, console, `kernel.terminate`); one-kernel worker test `tests/Integration/Worker/WorkerBoundariesTest.php` |
+| Remediation (2026-11-12, 1.2.5, audit NM) | Console bookkeeping is a running-command stack pushed / popped at `PHP_INT_MAX`: no depth leak when another console listener throws or stops propagation, an unknown command never decrements |
 
 ## Table of contents
 
@@ -64,7 +65,7 @@ A worker demo exists: `demo/symfony8/docker/frankenphp/Caddyfile:15` declares a 
 | `nowo.console_debug` (`ConsoleDebug`, public) | yes | none (`readonly` gate, registry, normalizer, config) | ✅ | ✅ (state lives in the registry) |
 | `ConsoleDebugHolderRequestSubscriber` | yes | none; clears the registry on main `kernel.request` | ✅ | ✅ |
 | `ConsoleDebugResponseSubscriber` | yes | none (`readonly` registry + config strings); clears the registry after each main response | ✅ | ✅ |
-| `ConsoleDebugBoundaryClearSubscriber` | yes | none (`readonly`; iterator of `IGNORE_ON_UNINITIALIZED_REFERENCE` references to the registry); clears it at `kernel.terminate`, Messenger and console boundaries | ✅ | ✅ |
+| `ConsoleDebugBoundaryClearSubscriber` | yes | iterator of `IGNORE_ON_UNINITIALIZED_REFERENCE` references to the registry; running-command stack (`list<Command>`, bounded by the nesting depth, pushed / popped at `PHP_INT_MAX` since 1.2.5), the outermost command being terminated and a Messenger in-flight flag (no request data; `reset()` exists, not tagged `kernel.reset`); clears the registry at `kernel.terminate`, Messenger and console boundaries | ✅ | ✅ |
 | `DebugValueNormalizer` | yes | none (`MAX_DEPTH` constant) | ✅ | ✅ |
 | Gates: `nowo.console_debug.gate.enabled`, `.roles`, `.query_param` (+ `CompositeConsoleDebugGate` if wired by the app) | yes | none (`readonly`); evaluated per call | ✅ | ✅ |
 | `ConsoleDebugRuntime` (`twig.runtime`), `ConsoleDebugTwigExtension` | yes | none | ✅ | ✅ |
@@ -91,7 +92,7 @@ A worker demo exists: `demo/symfony8/docker/frankenphp/Caddyfile:15` declares a 
 
 - **Where:** 1.0.0 to 1.2.3: the registry was emptied only by the HTTP subscribers (W-01) and by `kernel.reset`.
 - **Worker impact:** a Messenger consumer or a console command has no `kernel.request` / `kernel.response`. With `messenger:consume --no-reset` (or a host without `services_resetter`) and a gate that is open there (custom `gate_service`, or the role gate with an impersonated token), `cdbg()` entries piled up across messages and commands for the life of the process. They were never injected into a response from those paths, so the impact is memory and data held longer than needed, not disclosure.
-- **Status:** Resolved in 1.2.4 — `src/EventSubscriber/ConsoleDebugBoundaryClearSubscriber.php` empties the registry at `kernel.terminate`, `WorkerMessageReceivedEvent`, `WorkerMessageHandledEvent`, `WorkerMessageFailedEvent` and `console.terminate`. Tests: `tests/Integration/Worker/WorkerBoundariesTest.php`, `tests/Unit/EventSubscriber/ConsoleDebugBoundaryClearSubscriberTest.php`.
+- **Status:** Resolved in 1.2.4 — `src/EventSubscriber/ConsoleDebugBoundaryClearSubscriber.php` empties the registry at `kernel.terminate`, `WorkerMessageReceivedEvent`, `WorkerMessageHandledEvent`, `WorkerMessageFailedEvent` and `console.terminate`. Tests: `tests/Integration/Worker/WorkerBoundariesTest.php`, `tests/Unit/EventSubscriber/ConsoleDebugBoundaryClearSubscriberTest.php`. Audit NM (1.2.5, Low): the depth counter could leak when a console listener between the `++` (4096) and the `--` (-4096) threw or stopped propagation, so the outermost command of a long-lived process stopped emptying the registry (reverse: a nested command emptied the outer unit mid-run); now a running-command stack at `PHP_INT_MAX`, tested with a real console `Application` (throwing terminate listener, unknown nested command, `console.command` stopped above 4096).
 
 No other findings. `ConsoleDebugHolder` stores the service in `$_SERVER['__NOWO_CONSOLE_DEBUG']` (`src/ConsoleDebugHolder.php:19-24`) and `ConsoleDebugHolderRequestSubscriber` re-binds it on each main `kernel.request` (`src/EventSubscriber/ConsoleDebugHolderRequestSubscriber.php:26-33`), so the global `cdbg()` helper keeps working whether or not FrankenPHP repopulates `$_SERVER` between requests. The stored value is the same container singleton, so it carries no per-request data. Outside HTTP (CLI, Messenger workers) no request event fires after boot; `NowoConsoleDebugBundle::boot()` sets the holder once and `cdbg()` falls back to a silent no-op if it is missing. Entries recorded there are dropped at the Messenger and console boundaries (W-03).
 
@@ -111,7 +112,7 @@ No other findings. `ConsoleDebugHolder` stores the service in `$_SERVER['__NOWO_
 | HTTP main response | `kernel.response` (main only, entries present) | -4096 | `ConsoleDebugResponseSubscriber` (injects, then clears in `finally`) |
 | HTTP end | `kernel.terminate` | -4096 | `ConsoleDebugBoundaryClearSubscriber` |
 | Messenger message start / end | `Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent` / `WorkerMessageHandledEvent`, `WorkerMessageFailedEvent` (by name) | 4096 / -4096 | `ConsoleDebugBoundaryClearSubscriber` |
-| Console command end | `console.terminate` (by name; `console.command` counts the depth) | -4096 | `ConsoleDebugBoundaryClearSubscriber`, only when the outermost command ends and no Messenger message is in flight (`WorkerStoppedEvent` clears the in-flight flag) |
+| Console command end | `console.terminate` (by name; `console.command` pushes and the early `console.terminate` pops the running-command stack, both at `PHP_INT_MAX` since 1.2.5) | -4096 | `ConsoleDebugBoundaryClearSubscriber`, only when the outermost command ends and no Messenger message is in flight (`WorkerStoppedEvent` clears the in-flight flag) |
 | Services resetter (when the host runs it) | `kernel.reset` | — | registry `reset()` (kept, not relied on) |
 
 A command run in-process from another command or from a message handler (`Application::doRun()`) keeps the outer unit's entries (audit MI-C-I3; test `WorkerBoundariesTest::testNestedCommandsKeepTheOuterUnitsEntries`). One console command or one Messenger message is one unit of work: entries recorded inside a long loop of one command are held until the command terminates.

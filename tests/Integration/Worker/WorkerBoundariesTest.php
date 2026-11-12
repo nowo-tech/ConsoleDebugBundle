@@ -11,6 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,6 +26,7 @@ use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
 use Symfony\Component\Messenger\Worker;
+use Throwable;
 
 use function count;
 use function is_array;
@@ -225,6 +229,104 @@ final class WorkerBoundariesTest extends WebTestCase
 
         self::assertSame([1, 1, 1, 1], $counts, 'A command run from the handler dropped its entries.');
         self::assertTrue($registry->isEmpty(), 'The message boundaries clear the registry.');
+    }
+
+    /**
+     * Audit NM (a): a console.terminate listener of a nested command that throws no longer leaves the console
+     * bookkeeping unbalanced: the outer command and every later outermost command still clear the registry.
+     */
+    public function testThrowingTerminateListenerOfANestedCommandKeepsTheOuterBoundary(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher = $this->dispatcher();
+        $throwing   = static function (ConsoleTerminateEvent $event): void {
+            if ($event->getCommand()?->getName() === 'app:inner') {
+                throw new RuntimeException('terminate listener failed');
+            }
+        };
+        $dispatcher->addListener(ConsoleEvents::TERMINATE, $throwing, 0);
+
+        try {
+            self::assertSame([1], $this->runOuterWithNestedRun('app:inner'), 'A nested command dropped the outer command\'s entries.');
+            self::assertTrue($this->registry()->isEmpty(), 'The outer console.terminate still clears the registry.');
+
+            self::assertSame([1], $this->runOuterWithNestedRun('app:inner'), 'A nested command dropped the outer command\'s entries.');
+            self::assertTrue($this->registry()->isEmpty(), 'The next outermost console.terminate still clears the registry.');
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::TERMINATE, $throwing);
+        }
+    }
+
+    /**
+     * Audit NM (c): an unknown nested command (only console.error, no command / terminate) never ends the outer unit.
+     */
+    public function testUnknownNestedCommandKeepsTheOuterUnit(): void
+    {
+        self::bootKernel(['debug' => false]);
+
+        self::assertSame([1], $this->runOuterWithNestedRun('app:does-not-exist'), 'An unknown nested command dropped the outer entries.');
+        self::assertTrue($this->registry()->isEmpty(), 'The outermost console.terminate clears the registry.');
+    }
+
+    /**
+     * Audit NM (d): a console.command listener above 4096 that stops propagation in a nested command no longer lets
+     * that command's terminate clear the outer unit mid-run.
+     */
+    public function testStoppedNestedCommandEventKeepsTheOuterUnit(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher = $this->dispatcher();
+        $stopping   = static function (ConsoleCommandEvent $event): void {
+            if ($event->getCommand()?->getName() === 'app:inner') {
+                $event->stopPropagation();
+            }
+        };
+        $dispatcher->addListener(ConsoleEvents::COMMAND, $stopping, 10000);
+
+        try {
+            self::assertSame([1], $this->runOuterWithNestedRun('app:inner'), 'A nested command cleared the outer entries mid-run.');
+            self::assertTrue($this->registry()->isEmpty(), 'The outermost console.terminate clears the registry.');
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::COMMAND, $stopping);
+        }
+    }
+
+    /**
+     * Runs app:outer through a real console Application: it records one entry, runs $nested in-process (a failure of
+     * the nested run is swallowed) and returns the entry counts seen right after the nested run.
+     *
+     * @return list<int>
+     */
+    private function runOuterWithNestedRun(string $nested): array
+    {
+        $registry     = $this->registry();
+        $consoleDebug = $this->consoleDebug();
+        $application  = new Application('worker-test');
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+        $application->setDispatcher($this->dispatcher());
+
+        $counts = [];
+        $inner  = (new Command('app:inner'))->setCode(static fn (): int => Command::SUCCESS);
+        $outer  = (new Command('app:outer'))->setCode(static function (InputInterface $input, OutputInterface $output) use ($application, $registry, $consoleDebug, $nested, &$counts): int {
+            $consoleDebug->log('outer-entry');
+            try {
+                $application->doRun(new ArrayInput(['command' => $nested]), $output);
+            } catch (Throwable) {
+                // The nested run failed (throwing listener, unknown command); the outer command goes on.
+            }
+            $counts[] = count($registry->all());
+
+            return Command::SUCCESS;
+        });
+        $application->setCommandLoader(new FactoryCommandLoader([
+            'app:outer' => static fn (): Command => $outer,
+            'app:inner' => static fn (): Command => $inner,
+        ]));
+
+        self::assertSame(Command::SUCCESS, $application->run(new ArrayInput(['command' => 'app:outer']), new NullOutput()));
+
+        return $counts;
     }
 
     /**
