@@ -11,22 +11,32 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
+use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\EventListener\ResetServicesListener;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
 use Symfony\Component\Messenger\Worker;
+use Throwable;
 
 use function count;
 use function is_array;
 use function sprintf;
+
+use const PHP_INT_MIN;
 
 /**
  * Kept-alive kernel with the services resetter replaced by a no-op (a host that removes or bypasses
@@ -225,6 +235,256 @@ final class WorkerBoundariesTest extends WebTestCase
 
         self::assertSame([1, 1, 1, 1], $counts, 'A command run from the handler dropped its entries.');
         self::assertTrue($registry->isEmpty(), 'The message boundaries clear the registry.');
+    }
+
+    /**
+     * Audit NM (a): a console.terminate listener of a nested command that throws no longer leaves the console
+     * bookkeeping unbalanced: the outer command and every later outermost command still clear the registry.
+     */
+    public function testThrowingTerminateListenerOfANestedCommandKeepsTheOuterBoundary(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher = $this->dispatcher();
+        $throwing   = static function (ConsoleTerminateEvent $event): void {
+            if ($event->getCommand()?->getName() === 'app:inner') {
+                throw new RuntimeException('terminate listener failed');
+            }
+        };
+        $dispatcher->addListener(ConsoleEvents::TERMINATE, $throwing, 0);
+
+        try {
+            self::assertSame([1], $this->runOuterWithNestedRun('app:inner'), 'A nested command dropped the outer command\'s entries.');
+            self::assertTrue($this->registry()->isEmpty(), 'The outer console.terminate still clears the registry.');
+
+            self::assertSame([1], $this->runOuterWithNestedRun('app:inner'), 'A nested command dropped the outer command\'s entries.');
+            self::assertTrue($this->registry()->isEmpty(), 'The next outermost console.terminate still clears the registry.');
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::TERMINATE, $throwing);
+        }
+    }
+
+    /**
+     * Audit NM (c): an unknown nested command (only console.error, no command / terminate) never ends the outer unit.
+     */
+    public function testUnknownNestedCommandKeepsTheOuterUnit(): void
+    {
+        self::bootKernel(['debug' => false]);
+
+        self::assertSame([1], $this->runOuterWithNestedRun('app:does-not-exist'), 'An unknown nested command dropped the outer entries.');
+        self::assertTrue($this->registry()->isEmpty(), 'The outermost console.terminate clears the registry.');
+    }
+
+    /**
+     * Audit NM (d): a console.command listener above 4096 that stops propagation in a nested command no longer lets
+     * that command's terminate clear the outer unit mid-run.
+     */
+    public function testStoppedNestedCommandEventKeepsTheOuterUnit(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher = $this->dispatcher();
+        $stopping   = static function (ConsoleCommandEvent $event): void {
+            if ($event->getCommand()?->getName() === 'app:inner') {
+                $event->stopPropagation();
+            }
+        };
+        $dispatcher->addListener(ConsoleEvents::COMMAND, $stopping, 10000);
+
+        try {
+            self::assertSame([1], $this->runOuterWithNestedRun('app:inner'), 'A nested command cleared the outer entries mid-run.');
+            self::assertTrue($this->registry()->isEmpty(), 'The outermost console.terminate clears the registry.');
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::COMMAND, $stopping);
+        }
+    }
+
+    /**
+     * Audit NL2-v: a command that runs itself in-process (same Command object, new input) whose inner run fails and
+     * whose error listener throws: the outer run still empties the registry when it ends, and so does the next one.
+     */
+    public function testSelfRecursiveCommandWithAThrowingErrorListener(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $registry     = $this->registry();
+        $consoleDebug = $this->consoleDebug();
+        $dispatcher   = $this->dispatcher();
+        $application  = $this->application();
+        $throwing     = static function (): never {
+            throw new RuntimeException('error listener failed');
+        };
+        $depth     = 0;
+        $counts    = [];
+        $recursive = (new Command('app:rec'))->setCode(static function (InputInterface $input, OutputInterface $output) use ($application, $registry, $consoleDebug, $dispatcher, $throwing, &$depth, &$counts): int {
+            if (++$depth > 1) {
+                throw new RuntimeException('inner run failed');
+            }
+            $consoleDebug->log('outer-entry');
+            $dispatcher->addListener(ConsoleEvents::ERROR, $throwing);
+            try {
+                $application->run(new ArrayInput(['command' => 'app:rec']), $output);
+            } catch (Throwable) {
+                // The inner run failed and its error listener threw.
+            } finally {
+                $dispatcher->removeListener(ConsoleEvents::ERROR, $throwing);
+            }
+            $counts[] = count($registry->all());
+
+            return Command::SUCCESS;
+        });
+        $application->setCommandLoader(new FactoryCommandLoader(['app:rec' => static fn (): Command => $recursive]));
+
+        self::assertSame(Command::SUCCESS, $application->run(new ArrayInput(['command' => 'app:rec']), new NullOutput()));
+        self::assertSame([1], $counts, 'The failed inner run kept the outer entries.');
+        self::assertTrue($registry->isEmpty(), 'The outer run empties the registry.');
+
+        self::assertSame([1], $this->runOuterWithNestedRun('app:inner'));
+        self::assertTrue($registry->isEmpty(), 'The next outermost command empties the registry.');
+    }
+
+    /**
+     * Audit NL2-v: an error listener at PHP_INT_MIN throws, so the failing outermost command never terminates; its
+     * frame is dropped at the next command, which empties the registry when it ends.
+     */
+    public function testErrorListenerAtIntMinThrowingNeverKeepsTheProcessInsideACommand(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $registry     = $this->registry();
+        $consoleDebug = $this->consoleDebug();
+        $dispatcher   = $this->dispatcher();
+        $application  = $this->application();
+        $throwing     = static function (): never {
+            throw new RuntimeException('error listener failed');
+        };
+        $failing = (new Command('app:fail'))->setCode(static function () use ($consoleDebug): never {
+            $consoleDebug->log('failing-entry');
+
+            throw new RuntimeException('command failed');
+        });
+        $application->setCommandLoader(new FactoryCommandLoader(['app:fail' => static fn (): Command => $failing]));
+        $dispatcher->addListener(ConsoleEvents::ERROR, $throwing, PHP_INT_MIN);
+
+        try {
+            $application->run(new ArrayInput(['command' => 'app:fail']), new NullOutput());
+            self::fail('The error listener throws.');
+        } catch (RuntimeException) {
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::ERROR, $throwing);
+        }
+
+        // The failed command's entry is still there (its terminate never ran); the next command adds its own.
+        self::assertSame([2], $this->runOuterWithNestedRun('app:inner'));
+        self::assertTrue($registry->isEmpty(), 'The next command is the outermost unit and empties the registry.');
+    }
+
+    /**
+     * Audit NL2-v: a WorkerMessageReceivedEvent listener throws inside an in-process consume command (no handled /
+     * failed / stopped follows); the command's frame restores the "no message" state when it ends.
+     */
+    public function testThrowingMessageReceivedListenerInsideACommandDoesNotLeakTheMessageFlag(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher  = $this->dispatcher();
+        $application = $this->application();
+        $throwing    = static function (): never {
+            throw new RuntimeException('received listener failed');
+        };
+        $consume = (new Command('app:consume'))->setCode(static function () use ($dispatcher, $throwing): int {
+            $dispatcher->addListener(WorkerMessageReceivedEvent::class, $throwing);
+            try {
+                $dispatcher->dispatch(new WorkerMessageReceivedEvent(new Envelope(new TenantDebugMessage('A', 0, false)), 'async'));
+            } catch (RuntimeException) {
+            } finally {
+                $dispatcher->removeListener(WorkerMessageReceivedEvent::class, $throwing);
+            }
+
+            return Command::SUCCESS;
+        });
+        $application->setCommandLoader(new FactoryCommandLoader(['app:consume' => static fn (): Command => $consume]));
+
+        self::assertSame(Command::SUCCESS, $application->run(new ArrayInput(['command' => 'app:consume']), new NullOutput()));
+        self::assertSame([1], $this->runOuterWithNestedRun('app:inner'));
+        self::assertTrue($this->registry()->isEmpty(), 'No message is in flight after the command: the next command empties the registry.');
+    }
+
+    /**
+     * Audit NL2-v2: a message handler runs a command that fails and whose console.error listener throws (no
+     * terminate); the message fails and the worker stops: no message is stuck in flight, the next command clears.
+     */
+    public function testFailedCommandInsideAMessageNeverLeavesTheMessageInFlight(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher  = $this->dispatcher();
+        $application = $this->application();
+        $envelope    = new Envelope(new TenantDebugMessage('A', 0, true));
+        $throwing    = static function (): never {
+            throw new RuntimeException('error listener failed');
+        };
+        $failing = (new Command('app:fail'))->setCode(static function (): never {
+            throw new RuntimeException('command failed');
+        });
+        $application->setCommandLoader(new FactoryCommandLoader(['app:fail' => static fn (): Command => $failing]));
+
+        $dispatcher->dispatch(new WorkerMessageReceivedEvent($envelope, 'async'));
+        $dispatcher->addListener(ConsoleEvents::ERROR, $throwing);
+        try {
+            $application->run(new ArrayInput(['command' => 'app:fail']), new NullOutput());
+            self::fail('The error listener throws.');
+        } catch (RuntimeException) {
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::ERROR, $throwing);
+        }
+        $dispatcher->dispatch(new WorkerMessageFailedEvent($envelope, 'async', new RuntimeException('handler failed')));
+        $dispatcher->dispatch(new WorkerStoppedEvent($this->createStub(Worker::class)));
+
+        self::assertSame([1], $this->runOuterWithNestedRun('app:inner'));
+        self::assertTrue($this->registry()->isEmpty(), 'No message is stuck in flight: the next command empties the registry.');
+    }
+
+    private function application(): Application
+    {
+        $application = new Application('worker-test');
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+        $application->setDispatcher($this->dispatcher());
+
+        return $application;
+    }
+
+    /**
+     * Runs app:outer through a real console Application: it records one entry, runs $nested in-process (a failure of
+     * the nested run is swallowed) and returns the entry counts seen right after the nested run.
+     *
+     * @return list<int>
+     */
+    private function runOuterWithNestedRun(string $nested): array
+    {
+        $registry     = $this->registry();
+        $consoleDebug = $this->consoleDebug();
+        $application  = new Application('worker-test');
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+        $application->setDispatcher($this->dispatcher());
+
+        $counts = [];
+        $inner  = (new Command('app:inner'))->setCode(static fn (): int => Command::SUCCESS);
+        $outer  = (new Command('app:outer'))->setCode(static function (InputInterface $input, OutputInterface $output) use ($application, $registry, $consoleDebug, $nested, &$counts): int {
+            $consoleDebug->log('outer-entry');
+            try {
+                $application->doRun(new ArrayInput(['command' => $nested]), $output);
+            } catch (Throwable) {
+                // The nested run failed (throwing listener, unknown command); the outer command goes on.
+            }
+            $counts[] = count($registry->all());
+
+            return Command::SUCCESS;
+        });
+        $application->setCommandLoader(new FactoryCommandLoader([
+            'app:outer' => static fn (): Command => $outer,
+            'app:inner' => static fn (): Command => $inner,
+        ]));
+
+        self::assertSame(Command::SUCCESS, $application->run(new ArrayInput(['command' => 'app:outer']), new NullOutput()));
+
+        return $counts;
     }
 
     /**
