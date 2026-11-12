@@ -49,7 +49,7 @@ Next patch: 1.2.5.
   restoring it when the frame is removed; a terminate removes its own frame and the nested frames above it, a terminate
   without a frame never removes another run's frame; `console.error` marks the frame as failing and a frame still
   failing (its error listener threw, so Symfony skipped `console.terminate`) is dropped at the next message, command or
-  worker stop. The clears keep their priorities. `WorkerMessageSkipEvent` (only dispatched by
+  worker stop. Every handler drops such frames before writing its own flag (audit NL2-v2). The clears keep their priorities. `WorkerMessageSkipEvent` (only dispatched by
   `messenger:failed:retry`) also ends the message in flight. `kernel.terminate` and Messenger clears were
   already unconditional. New `reset()` (the service is not autoconfigured, so it is not tagged `kernel.reset`).
 

@@ -21,8 +21,10 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
+use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\EventListener\ResetServicesListener;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
@@ -401,6 +403,40 @@ final class WorkerBoundariesTest extends WebTestCase
         self::assertSame(Command::SUCCESS, $application->run(new ArrayInput(['command' => 'app:consume']), new NullOutput()));
         self::assertSame([1], $this->runOuterWithNestedRun('app:inner'));
         self::assertTrue($this->registry()->isEmpty(), 'No message is in flight after the command: the next command empties the registry.');
+    }
+
+    /**
+     * Audit NL2-v2: a message handler runs a command that fails and whose console.error listener throws (no
+     * terminate); the message fails and the worker stops: no message is stuck in flight, the next command clears.
+     */
+    public function testFailedCommandInsideAMessageNeverLeavesTheMessageInFlight(): void
+    {
+        self::bootKernel(['debug' => false]);
+        $dispatcher  = $this->dispatcher();
+        $application = $this->application();
+        $envelope    = new Envelope(new TenantDebugMessage('A', 0, true));
+        $throwing    = static function (): never {
+            throw new RuntimeException('error listener failed');
+        };
+        $failing = (new Command('app:fail'))->setCode(static function (): never {
+            throw new RuntimeException('command failed');
+        });
+        $application->setCommandLoader(new FactoryCommandLoader(['app:fail' => static fn (): Command => $failing]));
+
+        $dispatcher->dispatch(new WorkerMessageReceivedEvent($envelope, 'async'));
+        $dispatcher->addListener(ConsoleEvents::ERROR, $throwing);
+        try {
+            $application->run(new ArrayInput(['command' => 'app:fail']), new NullOutput());
+            self::fail('The error listener throws.');
+        } catch (RuntimeException) {
+        } finally {
+            $dispatcher->removeListener(ConsoleEvents::ERROR, $throwing);
+        }
+        $dispatcher->dispatch(new WorkerMessageFailedEvent($envelope, 'async', new RuntimeException('handler failed')));
+        $dispatcher->dispatch(new WorkerStoppedEvent($this->createStub(Worker::class)));
+
+        self::assertSame([1], $this->runOuterWithNestedRun('app:inner'));
+        self::assertTrue($this->registry()->isEmpty(), 'No message is stuck in flight: the next command empties the registry.');
     }
 
     private function application(): Application
