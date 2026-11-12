@@ -43,16 +43,23 @@ Next patch: 1.2.5.
   throwing `console.error` listener, so Symfony skipped `console.terminate`) left the depth above zero for the rest of
   the process, so the outermost command never emptied the registry again; a `console.command` listener above 4096
   that threw or stopped propagation skipped the `++` while the `--` still ran, so a nested command emptied the outer
-  unit's entries mid-run. The running commands are now a stack pushed and popped at `PHP_INT_MAX` (a terminate pops
-  its own command and every command started after it; a command that is not on the stack changes nothing); the
-  outermost decision is taken there and the clear still runs at -4096. `kernel.terminate` and Messenger clears were
+  unit's entries mid-run. The units of work are now tracked by the new internal `Worker\UnitOfWorkFrames`, fed at
+  `PHP_INT_MAX` (audits NM and NL2-v, same design as PageBuilderKitBundle): one frame per console run keyed by the
+  Command AND its input (a command that runs itself in-process is two frames), saving the outer Messenger state and
+  restoring it when the frame is removed; a terminate removes its own frame and the nested frames above it, a terminate
+  without a frame never removes another run's frame; `console.error` marks the frame as failing and a frame still
+  failing (its error listener threw, so Symfony skipped `console.terminate`) is dropped at the next message, command or
+  worker stop. The clears keep their priorities. `WorkerMessageSkipEvent` (only dispatched by
+  `messenger:failed:retry`) also ends the message in flight. `kernel.terminate` and Messenger clears were
   already unconditional. New `reset()` (the service is not autoconfigured, so it is not tagged `kernel.reset`).
 
 ### Tests
 
 - `WorkerBoundariesTest`: real console `Application` runs in the kept-alive kernel with a throwing terminate listener
-  of a nested command, an unknown nested command and a nested `console.command` stopped above 4096; unit test for an
-  unknown terminate and `reset()`.
+  of a nested command, an unknown nested command, a nested `console.command` stopped above 4096, a self-recursive
+  command whose error listener throws, an error listener at `PHP_INT_MIN` that throws and a throwing
+  `WorkerMessageReceivedEvent` listener inside a command; unit tests for `UnitOfWorkFrames`, an unknown terminate and
+  `reset()`.
 
 ## [1.2.4] - 2026-11-11
 

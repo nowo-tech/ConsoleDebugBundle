@@ -14,6 +14,7 @@ services:
             - '../../Functions.php'
             - '../../NowoConsoleDebugBundle.php'
             - '../../Twig/'
+            - '../../Worker/'
 
     nowo.console_debug.registry:
         class: Nowo\ConsoleDebugBundle\ConsoleDebugRegistry

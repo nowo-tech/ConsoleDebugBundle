@@ -38,8 +38,9 @@ composer update nowo-tech/console-debug-bundle
 
 - The outermost console command now always empties the debug registry when it ends, even when another console
   listener throws or stops propagation; a nested command never empties the outer command's entries.
-  `ConsoleDebugBoundaryClearSubscriber` is not autoconfigured any more (it is wired explicitly; its console methods now
-  take the console event).
+  `ConsoleDebugBoundaryClearSubscriber` is not autoconfigured any more (it is wired explicitly); it now also listens to
+  `console.error` and `WorkerMessageSkipEvent`, and its console methods take the console event. New internal
+  `Worker\UnitOfWorkFrames` (not a service).
 
 ## To 1.2.4
 
