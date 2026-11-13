@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[1.3.0] - 2026-11-13](#130---2026-11-13)
 - [[1.2.5] - 2026-11-12](#125---2026-11-12)
 - [[1.2.4] - 2026-11-11](#124---2026-11-11)
 - [[1.2.3] - 2026-10-28](#123---2026-10-28)
@@ -34,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-13
+
 ### Added
 
 - `Contract\ConsoleDebugInterface`, implemented by `ConsoleDebug` and aliased in the container (REQ-ARCH-001 rule 1). The holder, the request subscriber and the Twig runtime type-hint the interface. `ConsoleDebug` and the `nowo.console_debug` id keep working.
@@ -46,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Demo forms render a CSRF token
 
+[1.3.0]: https://github.com/nowo-tech/ConsoleDebugBundle/releases/tag/v1.3.0
 
 ## [1.2.5] - 2026-11-12
 
