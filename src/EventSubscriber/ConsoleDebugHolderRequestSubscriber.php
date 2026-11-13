@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nowo\ConsoleDebugBundle\EventSubscriber;
 
-use Nowo\ConsoleDebugBundle\ConsoleDebug;
 use Nowo\ConsoleDebugBundle\ConsoleDebugHolder;
 use Nowo\ConsoleDebugBundle\ConsoleDebugRegistry;
+use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -23,7 +23,7 @@ final class ConsoleDebugHolderRequestSubscriber implements EventSubscriberInterf
 {
     /** Publishes the ConsoleDebug service to the static holder on each main request. */
     public function __construct(
-        private readonly ConsoleDebug $consoleDebug,
+        private readonly ConsoleDebugInterface $consoleDebug,
         private readonly ?ConsoleDebugRegistry $registry = null,
     ) {
     }
