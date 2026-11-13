@@ -101,5 +101,7 @@ them out of the domain layer (a deptrac rule forbidding `Nowo\ConsoleDebugBundle
 
 ### Known limitations
 
-- `ConsoleDebug` is a final class without an interface: inject it in Infrastructure only.
+- Inject `Nowo\ConsoleDebugBundle\Contract\ConsoleDebugInterface` (`log()`, `logAt()`), not the final `ConsoleDebug` class. A host
+  replaces the implementation by re-aliasing the interface to its own service; the old `ConsoleDebug` id keeps working.
+  Keep it in Infrastructure only.
 - The `cdbg()` helper finds the service through a static, per-request holder (service locator by design).

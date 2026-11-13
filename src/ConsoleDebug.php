@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\ConsoleDebugBundle;
 
 use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface;
+use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugInterface;
 use Nowo\ConsoleDebugBundle\Serializer\DebugValueNormalizer;
 
 use function array_slice;
@@ -16,7 +17,7 @@ use const DEBUG_BACKTRACE_IGNORE_ARGS;
 /**
  * Collects cdbg() calls when the configured gate allows it.
  */
-final class ConsoleDebug
+final class ConsoleDebug implements ConsoleDebugInterface
 {
     /** Collects debug values when the gate allows it, normalizing them for the browser console. */
     public function __construct(

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Nowo\ConsoleDebugBundle\Tests\Integration\DependencyInjection;
 
+use Nowo\ConsoleDebugBundle\ConsoleDebug;
 use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugGateInterface;
+use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugInterface;
 use Nowo\ConsoleDebugBundle\DependencyInjection\ConsoleDebugExtension;
 use Nowo\ConsoleDebugBundle\EventSubscriber\ConsoleDebugResponseSubscriber;
 use PHPUnit\Framework\TestCase;
@@ -108,5 +110,33 @@ final class ConsoleDebugExtensionIntegrationTest extends TestCase
 
         self::assertTrue($container->hasDefinition('Nowo\\ConsoleDebugBundle\\Twig\\ConsoleDebugTwigExtension'));
         self::assertTrue($container->hasDefinition('Nowo\\ConsoleDebugBundle\\Twig\\ConsoleDebugRuntime'));
+    }
+
+    public function testServiceInterfaceIsAliasedAndHostCanOverrideIt(): void
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.project_dir', sys_get_temp_dir());
+        $container->register('security.authorization_checker', stdClass::class);
+        $container->register('request_stack', stdClass::class);
+
+        $extension = new ConsoleDebugExtension();
+        $extension->load([[
+            'enabled'        => true,
+            'roles'          => ['ROLE_CONSOLE_DEBUG'],
+            'console_method' => 'info',
+            'label_prefix'   => '[cdbg]',
+            'shorten_paths'  => true,
+            'query_param'    => null,
+            'gate_service'   => null,
+        ]], $container);
+
+        self::assertTrue($container->hasAlias(ConsoleDebugInterface::class));
+        self::assertSame('nowo.console_debug', (string) $container->getAlias(ConsoleDebugInterface::class));
+        self::assertSame('nowo.console_debug', (string) $container->getAlias(ConsoleDebug::class));
+
+        // A host overrides the interface alias with its own implementation.
+        $container->register('app.console_debug', stdClass::class);
+        $container->setAlias(ConsoleDebugInterface::class, 'app.console_debug');
+        self::assertSame('app.console_debug', (string) $container->getAlias(ConsoleDebugInterface::class));
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\ConsoleDebugBundle\Twig;
 
-use Nowo\ConsoleDebugBundle\ConsoleDebug;
+use Nowo\ConsoleDebugBundle\Contract\ConsoleDebugInterface;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 
@@ -15,7 +15,7 @@ final class ConsoleDebugRuntime implements RuntimeExtensionInterface
 {
     /** Runtime behind the cdbg() Twig function and {% cdbg %} tag. */
     public function __construct(
-        private readonly ConsoleDebug $consoleDebug,
+        private readonly ConsoleDebugInterface $consoleDebug,
     ) {
     }
 

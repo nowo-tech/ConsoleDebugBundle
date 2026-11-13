@@ -34,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Contract\ConsoleDebugInterface`, implemented by `ConsoleDebug` and aliased in the container (REQ-ARCH-001 rule 1). The holder, the request subscriber and the Twig runtime type-hint the interface. `ConsoleDebug` and the `nowo.console_debug` id keep working.
+
 ### Changed
 
 - Demo uses the UiKit base style and FormKit forms (REQ-DEMO-014/015)
