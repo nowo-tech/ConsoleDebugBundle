@@ -4,7 +4,6 @@
 
 - [Unreleased](#unreleased)
 - [To 1.3.0](#to-130)
-- [To 1.3.0](#to-130-1)
 - [To 1.2.5](#to-125)
 - [To 1.2.4](#to-124)
 - [To 1.2.3](#to-123)
@@ -29,14 +28,6 @@
 - [1.0.0](#100)
 
 ## Unreleased
-
-## To 1.3.0
-
-From **1.2.5**:
-
-```bash
-composer update nowo-tech/console-debug-bundle
-```
 
 ## To 1.3.0
 
