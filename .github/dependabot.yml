@@ -43,3 +43,22 @@ updates:
       - "github-actions"
     commit-message:
       prefix: "chore(ci):"
+
+  # Maintain npm dependencies (/demo/symfony8)
+  - package-ecosystem: "npm"
+    directory: "/demo/symfony8"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "javascript"
+    groups:
+      npm-demo-symfony8:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps):"
