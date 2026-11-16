@@ -35,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Spec Kit: `specs/001-baseline/code-inventory.md` maps `ConsoleDebugInterface`, `ConsoleDebugBoundaryClearSubscriber` and `Worker/UnitOfWorkFrames` (27/27 production files) (REQ-SPECKIT-001/003)
+- README: Tests and coverage marks TS/JS and Python as N/A (REQ-TEST-007)
+- CI: Dependabot npm updates for `demo/symfony8` (REQ-GH-002)
+
 ## [1.3.0] - 2026-11-13
 
 ### Added

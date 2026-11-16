@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/console-debug-bundle`  
-**Last audited**: 2026-10-20
+**Last audited**: 2026-11-16
 
 100% inventory of production files under `src/` (PHP and YAML) plus the bundle class `NowoConsoleDebugBundle.php`, which lives at the repository root (PSR-4 root). Every file maps to at least one FR-* in the baseline product spec.
 
@@ -27,6 +27,7 @@
 | File | Responsibility | Spec |
 | --- | --- | --- |
 | `Contract/ConsoleDebugGateInterface.php` | Authorization gate contract | FR-02, FR-05 |
+| `Contract/ConsoleDebugInterface.php` | Public contract of the collector (type-hint target, re-aliasable by hosts) | FR-01, FR-03 |
 
 ## Gates
 
@@ -49,6 +50,13 @@
 | --- | --- | --- |
 | `EventSubscriber/ConsoleDebugResponseSubscriber.php` | HTML script injection on RESPONSE | FR-04, FR-06 |
 | `EventSubscriber/ConsoleDebugHolderRequestSubscriber.php` | Re-bind holder on `kernel.request` (FrankenPHP worker) | FR-09 |
+| `EventSubscriber/ConsoleDebugBoundaryClearSubscriber.php` | Empties the registry at the end of every non-HTML unit of work (request, Messenger message, console command) | FR-08, FR-09 |
+
+## Worker boundaries
+
+| File | Responsibility | Spec |
+| --- | --- | --- |
+| `Worker/UnitOfWorkFrames.php` | Tracks the outermost unit of work so boundary listeners act once per request/message/command (REQ-RUNTIME-002) | FR-08, FR-09 |
 
 ## Twig
 
@@ -81,13 +89,14 @@
 | --- | ---: | ---: |
 | Bundle entry | 1 | 1 |
 | Core helpers | 5 | 5 |
-| Contract | 1 | 1 |
+| Contract | 2 | 2 |
 | Gates | 4 | 4 |
 | Serializer | 1 | 1 |
-| HTTP / events | 2 | 2 |
+| HTTP / events | 3 | 3 |
+| Worker boundaries | 1 | 1 |
 | Twig | 5 | 5 |
 | Dependency injection | 2 | 2 |
 | Resources (non-PHP) | 3 | 3 |
-| **Total production sources** | **24** | **24** |
+| **Total production sources** | **27** | **27** |
 
-Audit command (production count): `git ls-files src | wc -l` → **23**, plus the root `NowoConsoleDebugBundle.php` = **24** (2026-10-20).
+Audit command (production count): `git ls-files src | wc -l` → **26**, plus the root `NowoConsoleDebugBundle.php` = **27** (2026-11-16).

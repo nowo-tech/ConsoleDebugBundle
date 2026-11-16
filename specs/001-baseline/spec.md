@@ -62,7 +62,7 @@ Console Debug Bundle provides **`cdbg()`**, a production-safe alternative to `dd
 
 ## Success criteria
 
-- **SC-001**: **24/24** production files mapped in [`code-inventory.md`](code-inventory.md): 23 under `src/` plus the root bundle class (audited 2026-10-20).
+- **SC-001**: **27/27** production files mapped in [`code-inventory.md`](code-inventory.md): 26 under `src/` plus the root bundle class (audited 2026-11-16).
 - **SC-002**: Non-HTML responses are left unmodified (FR-06), proven by `ConsoleDebugResponseSubscriberTest`.
 - **SC-003**: Registry entries never leak across requests in FrankenPHP worker mode (FR-08, FR-09), proven by the reset and holder tests.
 - **SC-004**: PHPUnit, PHPStan (with the FrankenPHP rulesets) and PHP-CS-Fixer pass in CI.

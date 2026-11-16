@@ -143,6 +143,8 @@ make release-check
 
 - Tests: PHPUnit (PHP)
 - PHP: 100%
+- TS/JS: N/A (the bundle ships no TypeScript/JavaScript)
+- Python: N/A
 
 ## License and author
 
