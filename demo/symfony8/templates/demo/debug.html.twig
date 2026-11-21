@@ -31,28 +31,28 @@
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">PHP · single variable</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>cdbg($order);</code></pre>
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>cdbg($order);</code></pre>
                     <p class="nowo-ui-muted">No label — the value is logged as-is.</p>
                     </div>
                 </div>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">PHP · label + multiple arguments</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>cdbg('pricing snapshot', $order, $request->query->all());</code></pre>
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>cdbg('pricing snapshot', $order, $request->query->all());</code></pre>
                     <p class="nowo-ui-muted">First string becomes the group label; each arg is <code class="nowo-ui-code">arg0</code>, <code class="nowo-ui-code">arg1</code>…</p>
                     </div>
                 </div>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">PHP · mixed types</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>cdbg('mixed types', DemoPriority::High, $date, $user);</code></pre>
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>cdbg('mixed types', DemoPriority::High, $date, $user);</code></pre>
                     <p class="nowo-ui-muted">Enums, dates, scalars and objects are normalized for JSON.</p>
                     </div>
                 </div>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">PHP · sequential flow</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>cdbg('flow · step 1', …);
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>cdbg('flow · step 1', …);
 cdbg('flow · step 2', …);
 cdbg('flow · step 3', …);</code></pre>
                     <p class="nowo-ui-muted">Multiple calls in one request appear in order with <code class="nowo-ui-code">+Nms</code> offsets.</p>
@@ -61,7 +61,7 @@ cdbg('flow · step 3', …);</code></pre>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">PHP · entity / object</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>cdbg('entity without __toString', $entity);
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>cdbg('entity without __toString', $entity);
 cdbg('entity with __toString', $customer);</code></pre>
                     <p class="nowo-ui-muted">
                         Plain entities → <code class="nowo-ui-code">{ object, hash }</code>.
@@ -73,7 +73,7 @@ cdbg('entity with __toString', $customer);</code></pre>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">Twig · full context</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>{% verbatim %}{% cdbg %}{% endverbatim %}</code></pre>
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>{% verbatim %}{% cdbg %}{% endverbatim %}</code></pre>
                     <p class="nowo-ui-muted">Like <code class="nowo-ui-code">{% verbatim %}{% dump %}{% endverbatim %}</code> empty — all template variables except embedded templates.</p>
                     {% cdbg %}
                     </div>
@@ -81,7 +81,7 @@ cdbg('entity with __toString', $customer);</code></pre>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">Twig · function</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>{% verbatim %}{{ cdbg(demoMeta) }}{% endverbatim %}</code></pre>
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>{% verbatim %}{{ cdbg(demoMeta) }}{% endverbatim %}</code></pre>
                     <p class="nowo-ui-muted">Returns empty string — safe inside HTML. Renders nothing on the page.</p>
                     {{ cdbg(demoMeta) }}
                     </div>
@@ -89,7 +89,7 @@ cdbg('entity with __toString', $customer);</code></pre>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">Twig · tag with multiple variables</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>{% verbatim %}{% cdbg user, demoMeta, order %}{% endverbatim %}</code></pre>
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>{% verbatim %}{% cdbg user, demoMeta, order %}{% endverbatim %}</code></pre>
                     <p class="nowo-ui-muted">Named map in the console. Source location points to this template line.</p>
                     {% cdbg user, demoMeta, order %}
                     </div>
@@ -97,7 +97,7 @@ cdbg('entity with __toString', $customer);</code></pre>
                 <div class="nowo-ui-card">
                     <header class="nowo-ui-card__header"><h3 class="nowo-ui-card__title">Non-HTML · JSON endpoint</h3></header>
                     <div class="nowo-ui-card__body">
-                    <pre class="nowo-ui-code-block"><code>GET {{ path('demo_debug_json') }}
+                    <pre class="nowo-ui-code-block" tabindex="0"><code>GET {{ path('demo_debug_json') }}
 cdbg('json endpoint', ['injected' => false]);</code></pre>
                     <p class="nowo-ui-muted">
                         <code class="nowo-ui-code">cdbg()</code> still runs when the gate is open, but the response subscriber skips non-HTML bodies.

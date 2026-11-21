@@ -9,7 +9,7 @@
         "nowo-tech/console-debug-bundle": "@dev",
         "nowo-tech/form-kit-bundle": "^2.22",
         "nowo-tech/password-toggle-bundle": "^2.4.1",
-        "nowo-tech/ui-kit-bundle": "^2.60",
+        "nowo-tech/ui-kit-bundle": "^2.63.1",
         "pentatrion/vite-bundle": "^8.2.4",
         "php": ">=8.4",
         "symfony/asset": "8.1.*",

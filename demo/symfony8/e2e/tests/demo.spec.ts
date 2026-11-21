@@ -35,13 +35,13 @@ test.describe('Console Debug demo', () => {
     await signIn(page, 'debugger', 'debug');
     await expect(page).toHaveURL(/\/debug$/);
     await expect(page.getByTestId('demo-session')).toContainText('Expect 11 console groups');
-    expect(await page.content()).toContain('data-nowo-console-debug');
+    await expect(page.locator('script[data-nowo-console-debug]')).toHaveCount(1);
   });
 
   test('the viewer account has the gate closed', async ({ page }) => {
     await signIn(page, 'viewer', 'viewer');
     await expect(page).toHaveURL(/\/debug$/);
     await expect(page.getByTestId('demo-session')).toContainText('Gate closed');
-    expect(await page.content()).not.toContain('data-nowo-console-debug');
+    await expect(page.locator('script[data-nowo-console-debug]')).toHaveCount(0);
   });
 });
