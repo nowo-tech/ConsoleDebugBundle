@@ -1,16 +1,4 @@
 {
-    "doctrine/deprecations": {
-        "version": "1.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "1.0",
-            "ref": "fdd756167454623e21f1d769c5b814b243782a67"
-        }
-    },
-    "nowo-tech/form-kit-bundle": {
-        "version": "v2.22.0"
-    },
     "nowo-tech/hot-reload-bundle": {
         "version": "v1.3.2"
     },
@@ -19,9 +7,6 @@
     },
     "nowo-tech/twig-inspector-bundle": {
         "version": "v1.0.25"
-    },
-    "nowo-tech/ui-kit-bundle": {
-        "version": "v2.63.0"
     },
     "pentatrion/vite-bundle": {
         "version": "8.2",
@@ -152,19 +137,6 @@
         "files": [
             "config/packages/security.yaml",
             "config/routes/security.yaml"
-        ]
-    },
-    "symfony/translation": {
-        "version": "8.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "6.3",
-            "ref": "620a1b84865ceb2ba304c8f8bf2a185fbf32a843"
-        },
-        "files": [
-            "config/packages/translation.yaml",
-            "translations/.gitignore"
         ]
     },
     "symfony/twig-bundle": {

@@ -148,7 +148,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/console-debug-bundle",
-                "reference": "38473da2110bd9ed2e90e68f0ac986b5fdf5c34e"
+                "reference": "864d72b037c132aa04a66f103da0621cfb939020"
             },
             "require": {
                 "php": ">=8.2 <8.6",
