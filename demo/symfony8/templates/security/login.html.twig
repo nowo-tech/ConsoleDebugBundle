@@ -3,25 +3,25 @@
 {% block title %}Login{% endblock %}
 
 {% block nowo_ui_page_header %}
-    {{ include(nowo_ui_partial('page_header'), { title: 'Demo login' }) }}
+    {{ include(nowo_ui_partial('page_header'), {
+        title: 'Demo login',
+        intro: 'Try debugger / debug or viewer / viewer.',
+    }) }}
 {% endblock %}
 
 {% block body %}
-    <div class="nowo-ui-card">
-        <div class="nowo-ui-card__body">
-            {% if error %}
-                <div class="nowo-ui-flash nowo-ui-flash--error" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
-
-            {{ form_start(loginForm) }}
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'Sign in', kind: 'form', testid: 'demo-login'} %}
+        {% block section_body %}
+            {{ form_start(loginForm, {attr: {id: 'login-form', class: 'nowo-ui-form'}}) }}
                 {% for child in loginForm %}
-                    {% if not child.rendered %}
+                    {% if not child.rendered and child.vars.name != 'submit' %}
                         {{ form_row(child) }}
                     {% endif %}
                 {% endfor %}
-            {{ form_end(loginForm) }}
-
-            <p class="nowo-ui-muted">Try <code class="nowo-ui-code">debugger / debug</code> or <code class="nowo-ui-code">viewer / viewer</code>.</p>
-        </div>
-    </div>
+            {{ form_end(loginForm, {render_rest: false}) }}
+        {% endblock %}
+        {% block section_footer %}
+            <button type="submit" form="login-form" class="nowo-ui-btn nowo-ui-btn--primary">{{ loginForm.submit.vars.label }}</button>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

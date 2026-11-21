@@ -16,6 +16,7 @@ final class DemoControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Console Debug Bundle');
         self::assertSelectorTextContains('table', 'Full Twig context');
+        self::assertSelectorExists('[data-testid="demo-platform"]');
     }
 
     public function testDebugPageRequiresLogin(): void

@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Demo: runs in UiKit's demo platform shell (`nowo-tech/ui-kit-bundle` ^2.60, user menu from the demo firewall); the demo's own header is gone, the pages use the shell page headers and section cards, and the login error is a shell flash. The demo gains a minimal Playwright e2e (`make test-e2e`). Demo only, no bundle change.
 - Spec Kit: `specs/001-baseline/code-inventory.md` maps `ConsoleDebugInterface`, `ConsoleDebugBoundaryClearSubscriber` and `Worker/UnitOfWorkFrames` (27/27 production files) (REQ-SPECKIT-001/003)
 - README: Tests and coverage marks TS/JS and Python as N/A (REQ-TEST-007)
 - CI: Dependabot npm updates for `demo/symfony8` (REQ-GH-002)

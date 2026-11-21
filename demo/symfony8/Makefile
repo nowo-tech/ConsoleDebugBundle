@@ -1,4 +1,4 @@
-.PHONY: help up down composer-install build install shell logs test test-coverage cache-clear update-bundle ensure-up restart verify assets
+.PHONY: help up down composer-install build install shell logs test test-coverage cache-clear update-bundle ensure-up restart verify assets test-e2e
 
 # Prefer Compose V2; resolve docker via absolute path so GNU Make does not hit a local ./docker/ dir when PATH has empty entries (REQ-MAKE-010).
 DOCKER_BIN := $(shell command -v docker 2>/dev/null)
@@ -106,3 +106,16 @@ SERVICE_PHP := php
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
 # Optional: monorepo helper absent on standalone GitHub Actions checkout (REQ-MAKE-009).
 -include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-update-deps.mk
+
+# REQ-DEMO-013: Playwright e2e (official Playwright image; the image tag follows the exact @playwright/test version pinned in e2e/package.json).
+PLAYWRIGHT_VERSION := $(shell sed -n 's/.*"@playwright\/test": "\([0-9.]*\)".*/\1/p' e2e/package.json)
+PLAYWRIGHT_IMAGE ?= mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-jammy
+
+test-e2e: ensure-up
+	@mkdir -p e2e/node_modules
+	@PORT=$${DEMO_PORT:-$$(grep -E '^PORT=' .env 2>/dev/null | cut -d= -f2)}; PORT=$${PORT:-8011}; \
+	docker run --rm --network host --user "$$(id -u):$$(id -g)" -e HOME=/tmp \
+		-v "$(CURDIR)/e2e:/e2e" -w /e2e \
+		-e DEMO_BASE_URL=http://127.0.0.1:$$PORT \
+		$(PLAYWRIGHT_IMAGE) \
+		bash -lc 'npm ci --no-fund --no-audit && npx playwright test --project=chromium'
