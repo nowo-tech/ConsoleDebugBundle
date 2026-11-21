@@ -1,29 +1,22 @@
-{#- REQ-DEMO-014: the demo shell is UiKit's admin layout with UiKit's default theme (nowo-ui.css from the bundle's own
-    asset package, no CSS framework, no CDN). The password-toggle stylesheet is the PasswordToggle bundle's own. -#}
-{% extends '@NowoUiKit/layout/admin.html.twig' %}
-
+{#- REQ-DEMO-014: the demo runs inside UiKit's shared demo platform shell. This file only declares the demo; the
+    password-toggle stylesheet is the PasswordToggle bundle's own shipped asset. -#}
+{% extends '@NowoUiKit/demo_platform/layout.html.twig' %}
+{% set nowo_ui_demo_platform = {
+    bundle: 'Console Debug',
+    home_route: 'homepage',
+    repository: 'https://github.com/nowo-tech/ConsoleDebugBundle',
+    translation_domain: false,
+    nav: [
+        {label: 'Home', route: 'homepage'},
+        {label: 'Examples', route: 'demo_debug'},
+    ],
+    auth: {login_route: 'login', logout_route: 'logout'},
+} %}
 {% block nowo_ui_document_title %}{% block title %}Console Debug Demo{% endblock %}{% endblock %}
 
 {% block nowo_ui_styles %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/nowopasswordtoggle/css/toggle_password.css') }}">
-{% endblock %}
-
-{% block nowo_ui_navigation %}
-    {% set _route = app.request.attributes.get('_route') %}
-    <header class="nowo-ui-header" data-testid="demo-masthead">
-        <a class="nowo-ui-brand" href="{{ path('homepage') }}">Console Debug Bundle</a>
-        <nav class="nowo-ui-menu" aria-label="Demo">
-            <a class="nowo-ui-link" href="{{ path('homepage') }}"{% if _route == 'homepage' %} aria-current="page"{% endif %}>Home</a>
-            <a class="nowo-ui-link" href="{{ path('demo_debug') }}"{% if _route == 'demo_debug' %} aria-current="page"{% endif %}>Examples</a>
-            {% if app.user %}
-                <span class="nowo-ui-badge nowo-ui-badge--primary">{{ app.user.userIdentifier }}</span>
-                <a class="nowo-ui-link" href="{{ path('logout') }}">Logout</a>
-            {% else %}
-                <a class="nowo-ui-link" href="{{ path('login') }}"{% if _route == 'login' %} aria-current="page"{% endif %}>Login</a>
-            {% endif %}
-        </nav>
-    </header>
 {% endblock %}
 
 {% block nowo_ui_content %}{% block body %}{% endblock %}{% endblock %}

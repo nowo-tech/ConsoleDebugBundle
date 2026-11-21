@@ -3,26 +3,25 @@
 {% block title %}Console Debug Demo{% endblock %}
 
 {% block nowo_ui_page_header %}
-    {{ include(nowo_ui_partial('page_header'), { title: 'Console Debug Bundle' }) }}
+    {{ include(nowo_ui_partial('page_header'), {
+        title: 'Console Debug Bundle',
+        intro: 'Production-safe browser console debugging with cdbg() in PHP and Twig.',
+    }) }}
 {% endblock %}
 
 {% block body %}
-    <p>Production-safe browser console debugging with <code class="nowo-ui-code">cdbg()</code> in PHP and Twig.</p>
-
     <div class="nowo-ui-cards">
-        <div class="nowo-ui-card">
-            <header class="nowo-ui-card__header"><h2 class="nowo-ui-card__title">Try it</h2></header>
-            <div class="nowo-ui-card__body">
+        {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'Try it', kind: 'content', testid: 'demo-try'} %}
+            {% block section_body %}
                 <ol>
-                    <li><a href="{{ path('login') }}">Login</a> as <code>debugger / debug</code></li>
-                    <li>Open <a href="{{ path('demo_debug') }}">Examples</a> and DevTools → Console</li>
-                    <li>Compare with <code>viewer / viewer</code> (gate closed — no console output)</li>
+                    <li><a class="nowo-ui-link" href="{{ path('login') }}">Login</a> as <code class="nowo-ui-code">debugger / debug</code></li>
+                    <li>Open <a class="nowo-ui-link" href="{{ path('demo_debug') }}">Examples</a> and DevTools → Console</li>
+                    <li>Compare with <code class="nowo-ui-code">viewer / viewer</code> (gate closed — no console output)</li>
                 </ol>
-            </div>
-        </div>
-        <div class="nowo-ui-card">
-            <header class="nowo-ui-card__header"><h2 class="nowo-ui-card__title">Demo users</h2></header>
-            <div class="nowo-ui-card__body">
+            {% endblock %}
+        {% endembed %}
+        {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'Demo users', kind: 'list', testid: 'demo-users'} %}
+            {% block section_body %}
                 <ul class="nowo-ui-list">
                     <li>
                         <strong>debugger</strong> / <strong>debug</strong>
@@ -33,74 +32,73 @@
                         <div><span class="nowo-ui-badge nowo-ui-badge--neutral">ROLE_USER only</span> — gate closed, zero injection</div>
                     </li>
                 </ul>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     </div>
 
-    <div class="nowo-ui-card">
-        <header class="nowo-ui-card__header"><h2 class="nowo-ui-card__title">All use cases on the Examples page</h2></header>
-        <div class="nowo-ui-card__body">
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'All use cases on the Examples page', kind: 'table', testid: 'demo-use-cases'} %}
+        {% block section_body %}
             <table class="nowo-ui-data-table">
-                    <thead>
-                        <tr>
-                            <th>Case</th>
-                            <th>Syntax</th>
-                            <th>Where</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Single value</td>
-                            <td><code>cdbg($order)</code></td>
-                            <td>PHP controller</td>
-                        </tr>
-                        <tr>
-                            <td>Label + multiple args</td>
-                            <td><code>cdbg('pricing snapshot', $order, $query)</code></td>
-                            <td>PHP controller</td>
-                        </tr>
-                        <tr>
-                            <td>Mixed types</td>
-                            <td><code>cdbg('mixed types', $enum, $date, $user)</code></td>
-                            <td>PHP controller</td>
-                        </tr>
-                        <tr>
-                            <td>Entity / object</td>
-                            <td><code>cdbg($entity)</code> · <code>__toString()</code> · DTO array</td>
-                            <td>PHP controller</td>
-                        </tr>
-                        <tr>
-                            <td>Sequential flow</td>
-                            <td><code>cdbg('flow · step 1', …)</code> × 3</td>
-                            <td>PHP controller</td>
-                        </tr>
-                        <tr>
-                            <td>Full Twig context</td>
-                            <td><code>{% verbatim %}{% cdbg %}{% endverbatim %}</code></td>
-                            <td>Twig template</td>
-                        </tr>
-                        <tr>
-                            <td>Twig function</td>
-                            <td><code>{% verbatim %}{{ cdbg(demoMeta) }}{% endverbatim %}</code></td>
-                            <td>Twig template</td>
-                        </tr>
-                        <tr>
-                            <td>Twig tag · multiple vars</td>
-                            <td><code>{% verbatim %}{% cdbg user, demoMeta, order %}{% endverbatim %}</code></td>
-                            <td>Twig template</td>
-                        </tr>
-                        <tr>
-                            <td>Non-HTML (JSON API)</td>
-                            <td><code>cdbg(…)</code> in <a href="{{ path('demo_debug_json') }}">/debug/data.json</a></td>
-                            <td>Collected, not injected</td>
-                        </tr>
-                        <tr>
-                            <td>Role gate</td>
-                            <td><code>ROLE_CONSOLE_DEBUG</code></td>
-                            <td>Login as <code>viewer</code> → silent</td>
-                        </tr>
-                    </tbody>
-                </table>
-        </div>
-    </div>
+            <thead>
+        <tr>
+            <th>Case</th>
+            <th>Syntax</th>
+            <th>Where</th>
+        </tr>
+            </thead>
+            <tbody>
+        <tr>
+            <td>Single value</td>
+            <td><code class="nowo-ui-code">cdbg($order)</code></td>
+            <td>PHP controller</td>
+        </tr>
+        <tr>
+            <td>Label + multiple args</td>
+            <td><code class="nowo-ui-code">cdbg('pricing snapshot', $order, $query)</code></td>
+            <td>PHP controller</td>
+        </tr>
+        <tr>
+            <td>Mixed types</td>
+            <td><code class="nowo-ui-code">cdbg('mixed types', $enum, $date, $user)</code></td>
+            <td>PHP controller</td>
+        </tr>
+        <tr>
+            <td>Entity / object</td>
+            <td><code class="nowo-ui-code">cdbg($entity)</code> · <code class="nowo-ui-code">__toString()</code> · DTO array</td>
+            <td>PHP controller</td>
+        </tr>
+        <tr>
+            <td>Sequential flow</td>
+            <td><code class="nowo-ui-code">cdbg('flow · step 1', …)</code> × 3</td>
+            <td>PHP controller</td>
+        </tr>
+        <tr>
+            <td>Full Twig context</td>
+            <td><code class="nowo-ui-code">{% verbatim %}{% cdbg %}{% endverbatim %}</code></td>
+            <td>Twig template</td>
+        </tr>
+        <tr>
+            <td>Twig function</td>
+            <td><code class="nowo-ui-code">{% verbatim %}{{ cdbg(demoMeta) }}{% endverbatim %}</code></td>
+            <td>Twig template</td>
+        </tr>
+        <tr>
+            <td>Twig tag · multiple vars</td>
+            <td><code class="nowo-ui-code">{% verbatim %}{% cdbg user, demoMeta, order %}{% endverbatim %}</code></td>
+            <td>Twig template</td>
+        </tr>
+        <tr>
+            <td>Non-HTML (JSON API)</td>
+            <td><code class="nowo-ui-code">cdbg(…)</code> in <a class="nowo-ui-link" href="{{ path('demo_debug_json') }}">/debug/data.json</a></td>
+            <td>Collected, not injected</td>
+        </tr>
+        <tr>
+            <td>Role gate</td>
+            <td><code class="nowo-ui-code">ROLE_CONSOLE_DEBUG</code></td>
+            <td>Login as <code class="nowo-ui-code">viewer</code> → silent</td>
+        </tr>
+            </tbody>
+            </table>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
