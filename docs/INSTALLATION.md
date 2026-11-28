@@ -11,7 +11,7 @@
 
 ## Requirements
 
-- PHP `>=8.2` (<8.6). Symfony **8.0** and **8.1** require **PHP 8.4+**.
+- PHP `>=8.2` (<8.7). Symfony **8.0** and **8.1** require **PHP 8.4+**.
 - Symfony **7.4**, **8.0**, or **8.1** (`symfony/*` `^7.4 || ^8.0`).
 - Twig integration (`{{ cdbg() }}` / `{% cdbg %}`) needs `twig/twig` **3.15+** (older Twig versions conflict).
 - `symfony/security-bundle` (or equivalent) in your application for role-based gates.
